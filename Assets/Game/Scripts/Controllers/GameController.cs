@@ -1,18 +1,42 @@
-﻿using System.Collections;
+﻿using Game.Scripts.Helpers;
+using NaughtyAttributes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController : MonoBehaviour
+namespace Game.Scripts.Controllers
 {
-    // Start is called before the first frame update
-    void Start()
+    public class GameController : MonoBehaviour
     {
-        
-    }
+        [SerializeField] private TileMapGenerator _gridController;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [Button]
+        public void CreateHexagon()
+        {
+            _gridController.CreateHexagon(5,5);
+        }
+
+        #region Singleton
+
+        private static GameController _instance;
+
+        public static GameController Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindObjectOfType<GameController>();
+
+                    if (_instance == null)
+                    {
+                        Debug.LogError($"{typeof(GameController)} is needed in the scene but it does not exist!");
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        #endregion
     }
 }
