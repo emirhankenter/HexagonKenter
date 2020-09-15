@@ -1,5 +1,6 @@
 ﻿using Game.Scripts.Helpers;
 using NaughtyAttributes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,10 +11,22 @@ namespace Game.Scripts.Controllers
     {
         [SerializeField] private TileMapGenerator _gridController;
 
-        [Button]
+        [SerializeField, BoxGroup("GridSize")] private int _gridSizeX;
+        [SerializeField, BoxGroup("GridSize")] private int _gridSizeY;
+
+        private void Awake()
+        {
+            PrepareLevel();
+        }
+
+        private void PrepareLevel()
+        {
+            CreateHexagon();
+        }
+
         public void CreateHexagon()
         {
-            _gridController.CreateHexagon(5,5);
+            _gridController.CreateHexagon(_gridSizeX, _gridSizeY);
         }
 
         #region Singleton

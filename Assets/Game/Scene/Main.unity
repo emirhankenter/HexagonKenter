@@ -399,6 +399,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridController: {fileID: 1518217625}
+  _gridSizeX: 5
+  _gridSizeY: 5
 --- !u!4 &1518217624
 Transform:
   m_ObjectHideFlags: 0
