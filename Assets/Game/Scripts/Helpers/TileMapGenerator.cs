@@ -9,19 +9,19 @@ namespace Game.Scripts.Helpers
     {
         private string _hexagonPath = "Hexagon";
 
-        public void CreateHexagon(int width, int height)
+        public HexagonLevelBehaviour CreateHexagon(int width, int height)
         {
             var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
 
-            if (item == null) return;
+            if (item == null) return null;
 
-            var parent = new GameObject("TiliMap");
+            var hexagonLevelBehaviour = new GameObject("TileMap").AddComponent<HexagonLevelBehaviour>();
 
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    var hexagon = Instantiate(item as HexagonBehaviour, parent.transform);
+                    var hexagon = Instantiate(item as HexagonBehaviour, hexagonLevelBehaviour.transform);
 
                     if (j % 2 == 0)
                     {
@@ -33,7 +33,8 @@ namespace Game.Scripts.Helpers
                     }
                 }
             }
-            
+
+            return hexagonLevelBehaviour;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Game.Scripts.Helpers;
+﻿using Game.Scripts.Behaviours;
+using Game.Scripts.Helpers;
 using NaughtyAttributes;
 using System;
 using System.Collections;
@@ -9,10 +10,12 @@ namespace Game.Scripts.Controllers
 {
     public class GameController : MonoBehaviour
     {
-        [SerializeField] private TileMapGenerator _gridController;
+        [SerializeField] private TileMapGenerator _tileMapGenerator;
 
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeX;
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeY;
+
+        [ReadOnly] public HexagonLevelBehaviour CurrentLevel;
 
         private void Awake()
         {
@@ -21,12 +24,7 @@ namespace Game.Scripts.Controllers
 
         private void PrepareLevel()
         {
-            CreateHexagon();
-        }
-
-        public void CreateHexagon()
-        {
-            _gridController.CreateHexagon(_gridSizeX, _gridSizeY);
+            CurrentLevel = _tileMapGenerator.CreateHexagon(_gridSizeX, _gridSizeY);
         }
 
         #region Singleton

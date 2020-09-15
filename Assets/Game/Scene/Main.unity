@@ -398,9 +398,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e77ee1b9cac7e48994d820c1488403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridController: {fileID: 1518217625}
+  _tileMapGenerator: {fileID: 1518217625}
   _gridSizeX: 5
   _gridSizeY: 5
+  CurrentLevel: {fileID: 0}
 --- !u!4 &1518217624
 Transform:
   m_ObjectHideFlags: 0
