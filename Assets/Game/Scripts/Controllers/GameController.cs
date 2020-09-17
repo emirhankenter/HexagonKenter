@@ -17,6 +17,20 @@ namespace Game.Scripts.Controllers
 
         [ReadOnly] public HexagonLevelBehaviour CurrentLevel;
 
+        private CameraController _cameraController;
+        public CameraController CameraController
+        {
+            get
+            {
+                if (_cameraController == null)
+                {
+                    _cameraController = GetComponent<CameraController>();
+                }
+                return _cameraController;
+            }
+        }
+
+
         private void Awake()
         {
             PrepareLevel();
@@ -25,6 +39,11 @@ namespace Game.Scripts.Controllers
         private void PrepareLevel()
         {
             CurrentLevel = _tileMapGenerator.CreateHexagon(_gridSizeX, _gridSizeY);
+        }
+
+        private void DisposeLevel()
+        {
+            CurrentLevel.Dispose();
         }
 
         #region Singleton

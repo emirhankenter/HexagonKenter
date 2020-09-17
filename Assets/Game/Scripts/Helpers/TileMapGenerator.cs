@@ -22,14 +22,16 @@ namespace Game.Scripts.Helpers
                 for (int j = 0; j < height; j++)
                 {
                     var hexagon = Instantiate(item as HexagonBehaviour, hexagonLevelBehaviour.transform);
+                    hexagon.name = $"i: {i}, j: {j}";
+                    hexagonLevelBehaviour.HexagonBehaviours.Add(hexagon);
 
-                    if (j % 2 == 0)
+                    if (i % 2 == 0)
                     {
                         hexagon.transform.localPosition = new Vector3(i * hexagon.TileXOffset, j * hexagon.TileYOffset, 0);
                     }
                     else
                     {
-                        hexagon.transform.localPosition = new Vector3(i * hexagon.TileXOffset + hexagon.TileXOffset / 2, j * hexagon.TileYOffset, 0);
+                        hexagon.transform.localPosition = new Vector3(i * hexagon.TileXOffset, j * hexagon.TileYOffset + hexagon.TileYOffset / 2, 0);
                     }
                 }
             }

@@ -4,7 +4,7 @@ namespace Game.Scripts.Behaviours
 {
     public class HexagonBehaviour : MonoBehaviour
     {
-        public float TileXOffset => 2.385f;
-        public float TileYOffset => 1.922f;
+        public float TileXOffset => 1.97f;
+        public float TileYOffset => 2.28f;
     }
 }
