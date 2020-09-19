@@ -49,7 +49,7 @@ namespace Game.Scripts.Models
                 {
                     ""name"": """",
                     ""id"": ""af136eb5-f162-47a8-8ca7-4b5d0cba25ae"",
-                    ""path"": ""<Mouse>/position"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

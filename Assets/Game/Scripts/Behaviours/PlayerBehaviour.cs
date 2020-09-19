@@ -14,7 +14,7 @@ namespace Game.Scripts.Behaviours
 
         public InputActions InputActions;
 
-        private HexagonBehaviour _currentHexagon;
+        private (HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) _currentHexagonGroup;
 
         private void Awake()
         {
@@ -34,12 +34,17 @@ namespace Game.Scripts.Behaviours
         private void OnTapPerformed(InputAction.CallbackContext obj)
         {
             InputActions.Player.Fire.performed += OnFirePerformed;
-            InputActions.Player.Fire.canceled += OnFireCanceled;
 
-            if (GameController.Instance.CurrentLevel.TileMap.TryGetHexagonAtPoint(GameController.Instance.CameraController.GetMouseWorldPosition(), out HexagonBehaviour hexagon))
+            var mousePosition = GameController.Instance.CameraController.GetMouseWorldPosition();
+
+            if (GameController.Instance.CurrentLevel.TileMap.TryGetHexagonAtPoint(mousePosition, out HexagonBehaviour hexagon))
             {
                 Deselect();
-                Select(hexagon);
+
+                if (hexagon.GetClosestNeighbours(mousePosition, out var neighbours))
+                {
+                    SelectGroup((hexagon, neighbours.Item1, neighbours.Item2));
+                }
             }
         }
 
@@ -49,32 +54,42 @@ namespace Game.Scripts.Behaviours
 
         private void OnFirePerformed(InputAction.CallbackContext obj)
         {
+            InputActions.Player.Fire.canceled += OnFireCanceled;
             InputActions.Player.Move.performed += OnMovePerformed;
         }
 
         private void OnFireCanceled(InputAction.CallbackContext obj)
         {
-            InputActions.Player.Move.performed -= OnMovePerformed;
             InputActions.Player.Fire.performed -= OnFireCanceled;
+            InputActions.Player.Move.performed -= OnMovePerformed;
         }
 
         private void OnMovePerformed(InputAction.CallbackContext obj)
         {
             var position = obj.ReadValue<Vector2>();
+
+            //Debug.Log($"({position.x}, {position.y})");
         }
 
-        private void Select(HexagonBehaviour hexagon)
+        private void SelectGroup((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group)
         {
-            _currentHexagon = hexagon;
-            _currentHexagon.GetComponent<SpriteRenderer>().color = Color.green;
+            _currentHexagonGroup = group;
+            _currentHexagonGroup.Item1.GetComponent<SpriteRenderer>().color = Color.green;
+            _currentHexagonGroup.Item2.GetComponent<SpriteRenderer>().color = Color.green;
+            _currentHexagonGroup.Item3.GetComponent<SpriteRenderer>().color = Color.green;
         }
 
         private void Deselect()
         {
-            if (_currentHexagon != null)
+            if (_currentHexagonGroup.Item1 != null && _currentHexagonGroup.Item2 != null && _currentHexagonGroup.Item3 != null)
             {
-                _currentHexagon.GetComponent<SpriteRenderer>().color = Color.white;
-                _currentHexagon = null;
+                _currentHexagonGroup.Item1.GetComponent<SpriteRenderer>().color = Color.white;
+                _currentHexagonGroup.Item2.GetComponent<SpriteRenderer>().color = Color.white;
+                _currentHexagonGroup.Item3.GetComponent<SpriteRenderer>().color = Color.white;
+
+                _currentHexagonGroup.Item1 = null;
+                _currentHexagonGroup.Item2 = null;
+                _currentHexagonGroup.Item3 = null;
             }
         }
     }

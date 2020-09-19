@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Game.Scripts.Behaviours
 {
@@ -26,6 +27,98 @@ namespace Game.Scripts.Behaviours
         public (HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) GetGroup()
         {
             return (this, Hexagon.Up, Hexagon.RightUp);
+        }
+
+        public Hexagon<HexagonBehaviour> GetNeighbours()
+        {
+            return Hexagon;
+        }
+
+        public bool GetRightUpNeighbours(out (HexagonBehaviour up, HexagonBehaviour rightUp) neighbours)
+        {
+            if (Hexagon.Up != null && Hexagon.RightUp != null)
+            {
+                neighbours.up = Hexagon.Up;
+                neighbours.rightUp = Hexagon.RightUp;
+
+                return true;
+            }
+
+            neighbours = (null,null);
+            return false;
+        }
+
+        public bool GetClosestNeighbours(Vector2 targetPosition, out (HexagonBehaviour, HexagonBehaviour) neighbours)
+        {
+            var difference = new Vector2(targetPosition.x - transform.position.x, targetPosition.y - transform.position.y);
+            var radians = Math.Atan(difference.y / difference.x);
+            if (1 / difference.x < 0) radians += Math.PI;
+            if (1 / radians < 0) radians += 2 * Math.PI;
+            var degrees = radians * 180f / Math.PI;
+
+            if (degrees >= 0f && degrees <= 30f)
+            {
+                if (Hexagon.RightUp != null && Hexagon.RightDown != null)
+                {
+                    neighbours.Item1 = Hexagon.RightUp;
+                    neighbours.Item2 = Hexagon.RightDown;
+
+                    return true;
+                }
+            }
+            else if (degrees > 30f && degrees <= 90f)
+            {
+                if (Hexagon.Up != null && Hexagon.RightUp != null)
+                {
+                    neighbours.Item1 = Hexagon.Up;
+                    neighbours.Item2 = Hexagon.RightUp;
+
+                    return true;
+                }
+            }
+            else if (degrees > 90f && degrees <= 150f)
+            {
+                if (Hexagon.Up != null && Hexagon.LeftUp != null)
+                {
+                    neighbours.Item1 = Hexagon.Up;
+                    neighbours.Item2 = Hexagon.LeftUp;
+
+                    return true;
+                }
+            }
+            else if (degrees > 150f && degrees <= 210f)
+            {
+                if (Hexagon.LeftUp != null && Hexagon.LeftDown != null)
+                {
+                    neighbours.Item1 = Hexagon.LeftUp;
+                    neighbours.Item2 = Hexagon.LeftDown;
+
+                    return true;
+                }
+            }
+            else if (degrees > 210f && degrees <= 270f)
+            {
+                if (Hexagon.LeftDown != null && Hexagon.Down != null)
+                {
+                    neighbours.Item1 = Hexagon.LeftDown;
+                    neighbours.Item2 = Hexagon.Down;
+
+                    return true;
+                }
+            }
+            else if (degrees > 270f && degrees <= 360f)
+            {
+                if (Hexagon.Down != null && Hexagon.RightDown != null)
+                {
+                    neighbours.Item1 = Hexagon.Down;
+                    neighbours.Item2 = Hexagon.RightDown;
+
+                    return true;
+                }
+            }
+
+            neighbours = (null, null);
+            return false;
         }
     }
 }
