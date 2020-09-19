@@ -34,7 +34,7 @@ namespace Game.Scripts.Models
                     ""id"": ""385188da-23bf-41c6-8a61-d9091537ac8c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press""
+                    ""interactions"": ""Hold(duration=0.2)""
                 },
                 {
                     ""name"": ""Move"",
