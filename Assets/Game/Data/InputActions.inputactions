@@ -6,12 +6,20 @@
             "id": "a904d303-9ccf-4fbb-8ee8-f9def4fa6f71",
             "actions": [
                 {
-                    "name": "Fire",
+                    "name": "Tap",
                     "type": "Button",
                     "id": "5c148fb2-c74a-4feb-81cf-dcf0d0816490",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Tap"
+                },
+                {
+                    "name": "Fire",
+                    "type": "Button",
+                    "id": "385188da-23bf-41c6-8a61-d9091537ac8c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 },
                 {
                     "name": "Move",
@@ -25,23 +33,34 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "2d2f31cd-9b45-46ab-9bc8-56de4d6a4718",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "af136eb5-f162-47a8-8ca7-4b5d0cba25ae",
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2d2f31cd-9b45-46ab-9bc8-56de4d6a4718",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Tap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "41717ee5-4ae0-4204-a186-98a7e6a7bdcf",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
