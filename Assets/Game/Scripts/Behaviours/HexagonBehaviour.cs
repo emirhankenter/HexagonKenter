@@ -16,8 +16,10 @@ namespace Game.Scripts.Behaviours
 
     public class HexagonBehaviour : MonoBehaviour
     {
-        public float TileXOffset => 1.97f;
-        public float TileYOffset => 2.28f;
+        public static float TileXLength => 0.6585f;
+        public static float TileYLegth => 1.121f;
+        public static float TileXOffset => 1.97f;
+        public static float TileYOffset => 2.28f;
 
         public Hexagon<HexagonBehaviour> Hexagon = new Hexagon<HexagonBehaviour>();
 

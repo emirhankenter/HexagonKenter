@@ -1,4 +1,5 @@
 ﻿using Game.Scripts.Behaviours;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,11 +12,23 @@ namespace Game.Scripts.Helpers
 
         private HexagonBehaviour[,] _tileMap;
 
+        protected int Width;
+        protected int Height;
+
+        protected float HorizontalLenght;
+        protected float VerticalLenght;
+
         public HexagonBehaviour[,] CreateHexagonTileMap(int width, int height, Transform parent)
         {
             var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
 
             if (item == null) return null;
+
+            Width = width;
+            Height = height;
+
+            HorizontalLenght = HexagonBehaviour.TileXLength;
+            VerticalLenght = HexagonBehaviour.TileYLegth;
 
             _tileMap = new HexagonBehaviour[width, height];
 
@@ -30,11 +43,11 @@ namespace Game.Scripts.Helpers
 
                     if (i % 2 == 0)
                     {
-                        hexagon.transform.localPosition = new Vector3(i * hexagon.TileXOffset, j * hexagon.TileYOffset, 0);
+                        hexagon.transform.localPosition = new Vector3(i * HexagonBehaviour.TileXOffset, j * HexagonBehaviour.TileYOffset, 0);
                     }
                     else
                     {
-                        hexagon.transform.localPosition = new Vector3(i * hexagon.TileXOffset, j * hexagon.TileYOffset + hexagon.TileYOffset / 2, 0);
+                        hexagon.transform.localPosition = new Vector3(i * HexagonBehaviour.TileXOffset, j * HexagonBehaviour.TileYOffset + HexagonBehaviour.TileYOffset / 2, 0);
                     }
 
                 }
@@ -118,6 +131,35 @@ namespace Game.Scripts.Helpers
             }
 
             return _tileMap;
+        }
+
+        public bool IsInside(Vector2 origin, Vector2 position)
+        {
+            var q2x = Math.Abs(position.x - origin.x);
+            var q2y = Math.Abs(position.y - origin.y);
+
+            if (q2x > HorizontalLenght * 2 || q2y > VerticalLenght)
+            {
+                return false;
+            }
+            return VerticalLenght * 2 * HorizontalLenght - VerticalLenght * q2x - HorizontalLenght * q2y >= 0;
+        }
+
+        public bool TryGetHexagonAtPoint(Vector2 position, out HexagonBehaviour hexagonBehaviour)
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    if (IsInside(origin: _tileMap[i, j].transform.position, position))
+                    {
+                        hexagonBehaviour = _tileMap[i, j];
+                        return true;
+                    }
+                }
+            }
+            hexagonBehaviour = null;
+            return false;
         }
 
         public HexagonBehaviour GetHexagonAtIndex(int i, int j)
