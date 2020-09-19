@@ -22,6 +22,8 @@ namespace Game.Scripts.Behaviours
             InputActions.Enable();
             InputActions.Player.Tap.performed += OnTapPerformed;
             InputActions.Player.Tap.canceled += OnTapCanceled;
+
+            InputActions.Player.Fire.performed += OnFirePerformed;
         }
 
         private void OnDestroy()
@@ -29,11 +31,12 @@ namespace Game.Scripts.Behaviours
             InputActions.Disable();
             InputActions.Player.Tap.performed -= OnTapPerformed;
             InputActions.Player.Tap.canceled -= OnTapCanceled;
+
+            InputActions.Player.Fire.performed -= OnFirePerformed;
         }
 
         private void OnTapPerformed(InputAction.CallbackContext obj)
         {
-            InputActions.Player.Fire.performed += OnFirePerformed;
 
             var mousePosition = GameController.Instance.CameraController.GetMouseWorldPosition();
 
