@@ -19,6 +19,11 @@ namespace Game.Scripts.Behaviours
         public float TileXOffset => 1.97f;
         public float TileYOffset => 2.28f;
 
-        public Hexagon<HexagonBehaviour> Hexagon = new Hexagon<HexagonBehaviour>(); 
+        public Hexagon<HexagonBehaviour> Hexagon = new Hexagon<HexagonBehaviour>();
+
+        public (HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) GetGroup()
+        {
+            return (this, Hexagon.Up, Hexagon.RightUp);
+        }
     }
 }

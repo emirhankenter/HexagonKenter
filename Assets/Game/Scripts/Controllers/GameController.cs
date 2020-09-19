@@ -41,7 +41,9 @@ namespace Game.Scripts.Controllers
 
         private void PrepareLevel()
         {
-            CurrentLevel = _tileMapGenerator.CreateHexagonTileMap(_gridSizeX, _gridSizeY);
+            CurrentLevel = new GameObject("TileMap").AddComponent<HexagonLevelBehaviour>();
+
+            CurrentLevel.Initiliaze(_gridSizeX, _gridSizeY);
         }
 
         private void DisposeLevel()
@@ -51,9 +53,13 @@ namespace Game.Scripts.Controllers
         [Button]
         public void ChangeColorOfHexagon()
         {
-            var hexagon = CurrentLevel.GetHexagon(i, j);
+            var hexagon = CurrentLevel.TileMap.GetHexagonAtIndex(i, j);
 
-            hexagon.Hexagon.Down.GetComponent<SpriteRenderer>().color = color;
+            var hexagonGroup = hexagon.GetGroup();
+
+            hexagonGroup.Item1.GetComponent<SpriteRenderer>().color = color;
+            hexagonGroup.Item2.GetComponent<SpriteRenderer>().color = color;
+            hexagonGroup.Item3.GetComponent<SpriteRenderer>().color = color;
         }
 
         #region Singleton

@@ -11,14 +11,11 @@ namespace Game.Scripts.Helpers
 
         private HexagonBehaviour[,] _tileMap;
 
-        public HexagonLevelBehaviour CreateHexagonTileMap(int width, int height)
+        public HexagonBehaviour[,] CreateHexagonTileMap(int width, int height, Transform parent)
         {
             var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
 
             if (item == null) return null;
-
-            var hexagonLevelBehaviour = new GameObject("TileMap").AddComponent<HexagonLevelBehaviour>();
-            hexagonLevelBehaviour.Initiliaze(width, height);
 
             _tileMap = new HexagonBehaviour[width, height];
 
@@ -26,11 +23,10 @@ namespace Game.Scripts.Helpers
             {
                 for (int j = 0; j < height; j++)
                 {
-                    var hexagon = Instantiate(item as HexagonBehaviour, hexagonLevelBehaviour.transform);
+                    var hexagon = Instantiate(item as HexagonBehaviour, parent);
                     _tileMap[i, j] = hexagon;
 
                     hexagon.name = $"Tile ({i},{j})";
-                    hexagonLevelBehaviour.HexagonBehaviours[i, j] = hexagon;
 
                     if (i % 2 == 0)
                     {
@@ -121,7 +117,12 @@ namespace Game.Scripts.Helpers
                 }
             }
 
-            return hexagonLevelBehaviour;
+            return _tileMap;
+        }
+
+        public HexagonBehaviour GetHexagonAtIndex(int i, int j)
+        {
+            return _tileMap[i, j];
         }
     }
 }
