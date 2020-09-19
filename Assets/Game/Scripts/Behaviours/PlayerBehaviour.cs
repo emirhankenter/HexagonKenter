@@ -59,12 +59,16 @@ namespace Game.Scripts.Behaviours
         {
             InputActions.Player.Fire.canceled += OnFireCanceled;
             InputActions.Player.Move.performed += OnMovePerformed;
+
+            Debug.Log("Fire");
         }
 
         private void OnFireCanceled(InputAction.CallbackContext obj)
         {
-            InputActions.Player.Fire.performed -= OnFireCanceled;
+            InputActions.Player.Fire.canceled -= OnFireCanceled;
             InputActions.Player.Move.performed -= OnMovePerformed;
+
+            Debug.Log("FireCanceled");
         }
 
         private void OnMovePerformed(InputAction.CallbackContext obj)
