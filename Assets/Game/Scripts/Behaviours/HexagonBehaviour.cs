@@ -56,7 +56,7 @@ namespace Game.Scripts.Behaviours
             if (1 / radians < 0) radians += 2 * Math.PI;
             var degrees = radians * 180f / Math.PI;
 
-            if (degrees >= 0f && degrees <= 30f)
+            if (degrees > 330f || degrees <= 30f)
             {
                 if (Hexagon.RightUp != null && Hexagon.RightDown != null)
                 {
@@ -106,7 +106,7 @@ namespace Game.Scripts.Behaviours
                     return true;
                 }
             }
-            else if (degrees > 270f && degrees <= 360f)
+            else if (degrees > 270f && degrees <= 330f)
             {
                 if (Hexagon.Down != null && Hexagon.RightDown != null)
                 {

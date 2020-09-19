@@ -72,7 +72,7 @@ namespace Game.Scripts.Helpers
                         {
                             if (j > 0)
                             {
-                                _tileMap[i, j].Hexagon.LeftDown = _tileMap[i - 1, j];
+                                _tileMap[i, j].Hexagon.LeftDown = _tileMap[i - 1, j- 1];
                             }
 
                             if (j < height - 1)
@@ -88,7 +88,7 @@ namespace Game.Scripts.Helpers
                         {
                             if (j > 0)
                             {
-                                _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j - 1];
+                                _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j];
                             }
 
                             if (j < height - 1)
@@ -100,7 +100,7 @@ namespace Game.Scripts.Helpers
                         {
                             if (j > 0)
                             {
-                                _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j];
+                                _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j - 1];
                             }
 
                             if (j < height - 1)
@@ -113,20 +113,12 @@ namespace Game.Scripts.Helpers
                     if (j > 0)
                     {
                         _tileMap[i, j].Hexagon.Down = _tileMap[i, j - 1];
-
-                        if (j < height - 1)
-                        {
-                            _tileMap[i, j].Hexagon.Up = _tileMap[i, j + 1];
-                        }
                     }
-                    else
+
+                    if (j < height - 1)
                     {
-                        if (j < height - 1)
-                        {
-                            _tileMap[i, j].Hexagon.Up = _tileMap[i, j + 1];
-                        }
+                        _tileMap[i, j].Hexagon.Up = _tileMap[i, j + 1];
                     }
-
                 }
             }
 
