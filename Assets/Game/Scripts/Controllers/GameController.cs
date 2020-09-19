@@ -10,7 +10,7 @@ namespace Game.Scripts.Controllers
 {
     public class GameController : MonoBehaviour
     {
-        [SerializeField] private TileMapGenerator _tileMapGenerator;
+        [SerializeField] private TileMapSystem _tileMapGenerator;
 
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeX;
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeY;
@@ -30,6 +30,9 @@ namespace Game.Scripts.Controllers
             }
         }
 
+        public int i;
+        public int j;
+        public Color color;
 
         private void Awake()
         {
@@ -38,12 +41,19 @@ namespace Game.Scripts.Controllers
 
         private void PrepareLevel()
         {
-            CurrentLevel = _tileMapGenerator.CreateHexagon(_gridSizeX, _gridSizeY);
+            CurrentLevel = _tileMapGenerator.CreateHexagonTileMap(_gridSizeX, _gridSizeY);
         }
 
         private void DisposeLevel()
         {
-            CurrentLevel.Dispose();
+        }
+
+        [Button]
+        public void ChangeColorOfHexagon()
+        {
+            var hexagon = CurrentLevel.GetHexagon(i, j);
+
+            hexagon.Hexagon.Down.GetComponent<SpriteRenderer>().color = color;
         }
 
         #region Singleton

@@ -6,12 +6,23 @@ namespace Game.Scripts.Behaviours
 {
     public class HexagonLevelBehaviour : MonoBehaviour
     {
-        private List<HexagonBehaviour> _hexagonBehaviours = new List<HexagonBehaviour>();
-        public List<HexagonBehaviour> HexagonBehaviours => _hexagonBehaviours;
+        private HexagonBehaviour[,] _hexagonBehaviours;
+        public HexagonBehaviour[,] HexagonBehaviours => _hexagonBehaviours;
 
-        public void Dispose()
+        protected int Width;
+        protected int Height;
+
+        public void Initiliaze(int width, int height)
         {
-            HexagonBehaviours.Clear();
+            Width = width;
+            Height = height;
+
+            _hexagonBehaviours = new HexagonBehaviour[width, height];
+        }
+
+        public HexagonBehaviour GetHexagon(int i, int j)
+        {
+            return HexagonBehaviours[i, j];
         }
     }
 }
