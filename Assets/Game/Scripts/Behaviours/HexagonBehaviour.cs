@@ -117,6 +117,85 @@ namespace Game.Scripts.Behaviours
                 }
             }
 
+            if (degrees > 0 && degrees <= 180)
+            {
+                var closeToLeft = Math.Abs(180f - degrees) < Math.Abs(degrees - 0);
+
+                if (closeToLeft)
+                {
+                    if (Hexagon.Up != null && Hexagon.RightUp != null)
+                    {
+                        neighbours.Item1 = Hexagon.Up;
+                        neighbours.Item2 = Hexagon.RightUp;
+
+                        return true;
+                    }
+                    else if (Hexagon.Down != null && Hexagon.RightDown != null)
+                    {
+                        neighbours.Item1 = Hexagon.Down;
+                        neighbours.Item2 = Hexagon.RightDown;
+
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (Hexagon.Up != null && Hexagon.LeftUp != null)
+                    {
+                        neighbours.Item1 = Hexagon.Up;
+                        neighbours.Item2 = Hexagon.LeftUp;
+
+                        return true;
+                    }
+                    else if (Hexagon.LeftDown != null && Hexagon.Down != null)
+                    {
+                        neighbours.Item1 = Hexagon.LeftDown;
+                        neighbours.Item2 = Hexagon.Down;
+
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                var closeToLeft = Math.Abs(360f - degrees) > Math.Abs(degrees - 180f);
+
+                if (closeToLeft)
+                {
+                    if (Hexagon.LeftUp != null && Hexagon.LeftDown != null)
+                    {
+                        neighbours.Item1 = Hexagon.LeftUp;
+                        neighbours.Item2 = Hexagon.LeftDown;
+
+                        return true;
+                    }
+                    else if (Hexagon.Up != null && Hexagon.LeftUp != null)
+                    {
+                        neighbours.Item1 = Hexagon.Up;
+                        neighbours.Item2 = Hexagon.LeftUp;
+
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (Hexagon.RightUp != null && Hexagon.RightDown != null)
+                    {
+                        neighbours.Item1 = Hexagon.RightUp;
+                        neighbours.Item2 = Hexagon.RightDown;
+
+                        return true;
+                    }
+                    else if (Hexagon.Up != null && Hexagon.RightUp != null)
+                    {
+                        neighbours.Item1 = Hexagon.Up;
+                        neighbours.Item2 = Hexagon.RightUp;
+
+                        return true;
+                    }
+                }
+            }
+
             neighbours = (null, null);
             return false;
         }

@@ -86,10 +86,7 @@ namespace Game.Scripts.Helpers
                     {
                         if (i % 2 == 1)
                         {
-                            if (j > 0)
-                            {
-                                _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j];
-                            }
+                            _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j];
 
                             if (j < height - 1)
                             {
