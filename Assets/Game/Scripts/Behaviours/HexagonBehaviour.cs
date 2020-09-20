@@ -22,7 +22,28 @@ namespace Game.Scripts.Behaviours
         public static float TileXOffset => 1.97f;
         public static float TileYOffset => 2.28f;
 
+        [SerializeField] private SpriteRenderer _hexagonSprite;
+        [SerializeField] private SpriteRenderer _outlineSprite;
+
         public Hexagon<HexagonBehaviour> Hexagon = new Hexagon<HexagonBehaviour>();
+
+        public Color Color { get; private set; }
+
+        public void Initialize(Color color)
+        {
+            Color = color;
+
+            _hexagonSprite.color = color;
+        }
+
+        public void Select()
+        {
+            _outlineSprite.enabled = true;
+        }
+        public void Deselect()
+        {
+            _outlineSprite.enabled = false;
+        }
 
         public bool GetRighUpAndRightDownNeighbours(out (HexagonBehaviour rightDown, HexagonBehaviour rightUp) neighbours)
         {
@@ -120,45 +141,27 @@ namespace Game.Scripts.Behaviours
 
             if (degrees > 330f || degrees <= 30f)
             {
-                if (GetRighUpAndRightDownNeighbours(out neighbours))
-                {
-                    return true;
-                }
+                if (GetRighUpAndRightDownNeighbours(out neighbours)) return true;
             }
             else if (degrees > 30f && degrees <= 90f)
             {
-                if (GetUpAndRightUpNeighbours(out neighbours))
-                {
-                    return true;
-                }
+                if (GetUpAndRightUpNeighbours(out neighbours)) return true;
             }
             else if (degrees > 90f && degrees <= 150f)
             {
-                if (GetUpAndLeftUpNeighbours(out neighbours))
-                {
-                    return true;
-                }
+                if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
             }
             else if (degrees > 150f && degrees <= 210f)
             {
-                if (GetLeftUpAndLeftDownNeighbours(out neighbours))
-                {
-                    return true;
-                }
+                if (GetLeftUpAndLeftDownNeighbours(out neighbours)) return true;
             }
             else if (degrees > 210f && degrees <= 270f)
             {
-                if (GetDownAndLeftDownNeighbours(out neighbours))
-                {
-                    return true;
-                }
+                if (GetDownAndLeftDownNeighbours(out neighbours)) return true;
             }
             else if (degrees > 270f && degrees <= 330f)
             {
-                if (GetDownAndRightDownNeighbours(out neighbours))
-                {
-                    return true;
-                }
+                if (GetDownAndRightDownNeighbours(out neighbours)) return true;
             }
 
             if (degrees > 0 && degrees <= 180)
@@ -167,25 +170,13 @@ namespace Game.Scripts.Behaviours
 
                 if (closeToLeft)
                 {
-                    if (GetUpAndRightUpNeighbours(out neighbours))
-                    {
-                        return true;
-                    }
-                    else if (GetDownAndRightDownNeighbours(out neighbours))
-                    {
-                        return true;
-                    }
+                    if (GetUpAndRightUpNeighbours(out neighbours)) return true;
+                    else if (GetDownAndRightDownNeighbours(out neighbours)) return true;
                 }
                 else
                 {
-                    if (GetUpAndLeftUpNeighbours(out neighbours))
-                    {
-                        return true;
-                    }
-                    else if (GetDownAndLeftDownNeighbours(out neighbours))
-                    {
-                        return true;
-                    }
+                    if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
+                    else if (GetDownAndLeftDownNeighbours(out neighbours)) return true;
                 }
             }
             else
@@ -194,25 +185,13 @@ namespace Game.Scripts.Behaviours
 
                 if (closeToLeft)
                 {
-                    if (GetLeftUpAndLeftDownNeighbours(out neighbours))
-                    {
-                        return true;
-                    }
-                    else if (GetUpAndLeftUpNeighbours(out neighbours))
-                    {
-                        return true;
-                    }
+                    if (GetLeftUpAndLeftDownNeighbours(out neighbours)) return true;
+                    else if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
                 }
                 else
                 {
-                    if (GetRighUpAndRightDownNeighbours(out neighbours))
-                    {
-                        return true;
-                    }
-                    else if (GetUpAndRightUpNeighbours(out neighbours))
-                    {
-                        return true;
-                    }
+                    if (GetRighUpAndRightDownNeighbours(out neighbours)) return true;
+                    else if (GetUpAndRightUpNeighbours(out neighbours)) return true;
                 }
             }
 

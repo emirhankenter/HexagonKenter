@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Game.Scripts.Helpers
 {
     public static class Extensions
     {
+        private static Random Random = new Random();
         public static int FindIndex<T>(this T[] array, T item)
         {
             return Array.IndexOf(array, item);
@@ -28,9 +30,13 @@ namespace Game.Scripts.Helpers
 
         public static T GetRandomElement<T>(this T[] array)
         {
-            var random = new Random(DateTime.Now.ToString().GetHashCode());
-            var index = random.Next(array.Length);
+            var index = Random.Next(0, array.Length);
             return array[index];
+        }
+        public static T GetRandomElement<T>(this List<T> list)
+        {
+            var index = Random.Next(0, list.Count);
+            return list[index];
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Game.Scripts.Helpers
         protected float HorizontalLenght;
         protected float VerticalLenght;
 
+        protected Color[] Colors = { Color.red, Color.green, Color.blue, Color.cyan, Color.yellow, Color.magenta};
+
         public HexagonBehaviour[,] CreateHexagonTileMap(int width, int height, Transform parent)
         {
             var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
@@ -41,6 +43,8 @@ namespace Game.Scripts.Helpers
                 {
                     var hexagon = Instantiate(item as HexagonBehaviour, parent);
                     _tileMap[i, j] = hexagon;
+
+                    hexagon.Initialize(Colors.GetRandomElement());
 
                     hexagon.name = $"Tile ({i},{j})";
 
