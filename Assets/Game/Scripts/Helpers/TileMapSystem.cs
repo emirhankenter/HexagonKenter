@@ -155,5 +155,10 @@ namespace Game.Scripts.Helpers
         {
             return _tileMap[i, j];
         }
+
+        public (int i, int j) GetHexagonIndexes(HexagonBehaviour hexagon)
+        {
+            return _tileMap.FindIndex(hexagon);
+        }
     }
 }
