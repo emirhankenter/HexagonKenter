@@ -193,9 +193,13 @@ namespace Game.Scripts.Helpers
                     var temp2Positions = group.Item2.transform.position;
                     var temp3Positions = group.Item3.transform.position;
 
-                    group.Item1.transform.DOMove(temp2Positions, 0.2f);
-                    group.Item2.transform.DOMove(temp3Positions, 0.2f);
-                    group.Item3.transform.DOMove(temp1Positions, 0.2f);
+                    group.Item1.transform.DOMove(temp2Positions, stepDuration);
+                    group.Item2.transform.DOMove(temp3Positions, stepDuration);
+                    group.Item3.transform.DOMove(temp1Positions, stepDuration);
+
+                    group.Item1.transform.DORotate(new Vector3(0, 0, 60), stepDuration, RotateMode.WorldAxisAdd);
+                    group.Item2.transform.DORotate(new Vector3(0, 0, 60), stepDuration, RotateMode.WorldAxisAdd);
+                    group.Item3.transform.DORotate(new Vector3(0, 0, 60), stepDuration, RotateMode.WorldAxisAdd);
 
                     var item1Indeces = _tileMap.FindIndex(group.Item1);
                     var item2Indeces = _tileMap.FindIndex(group.Item2);
@@ -230,6 +234,69 @@ namespace Game.Scripts.Helpers
                 onComplete?.Invoke();
             }
         }
+        public void RotateClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, float stepDuration = 0.2f, Action onComplete = null)
+        {
+            StartCoroutine(Rotate());
+            IEnumerator Rotate()
+            {
+                var index = 0;
 
+                while (index < 3)
+                {
+                    index++;
+
+                    var tempItem1 = group.Item1;
+                    var tempItem2 = group.Item2;
+                    var tempItem3 = group.Item3;
+
+                    HexagonBehaviour[,] tempArray;
+
+                    tempArray = (HexagonBehaviour[,])_tileMap.Clone();
+
+                    var temp1Positions = group.Item1.transform.position;
+                    var temp2Positions = group.Item2.transform.position;
+                    var temp3Positions = group.Item3.transform.position;
+
+                    group.Item1.transform.DOMove(temp3Positions, stepDuration);
+                    group.Item2.transform.DOMove(temp1Positions, stepDuration);
+                    group.Item3.transform.DOMove(temp2Positions, stepDuration);
+
+                    group.Item1.transform.DORotate(new Vector3(0, 0, -60), stepDuration, RotateMode.WorldAxisAdd);
+                    group.Item2.transform.DORotate(new Vector3(0, 0, -60), stepDuration, RotateMode.WorldAxisAdd);
+                    group.Item3.transform.DORotate(new Vector3(0, 0, -60), stepDuration, RotateMode.WorldAxisAdd);
+
+                    var item1Indeces = _tileMap.FindIndex(group.Item1);
+                    var item2Indeces = _tileMap.FindIndex(group.Item2);
+                    var item3Indeces = _tileMap.FindIndex(group.Item3);
+
+                    for (int i = 0; i < Width; i++)
+                    {
+                        for (int j = 0; j < Height; j++)
+                        {
+                            if (item1Indeces.i == i && item1Indeces.j == j)
+                            {
+                                tempArray[i, j] = _tileMap[item3Indeces.i, item3Indeces.j];
+                            }
+                            else if (item2Indeces.i == i && item2Indeces.j == j)
+                            {
+                                tempArray[i, j] = _tileMap[item1Indeces.i, item1Indeces.j];
+                            }
+                            else if (item3Indeces.i == i && item3Indeces.j == j)
+                            {
+                                tempArray[i, j] = _tileMap[item2Indeces.i, item2Indeces.j];
+                            }
+                        }
+                    }
+
+                    _tileMap = tempArray;
+
+                    UpdateIndexes();
+
+                    yield return new WaitForSeconds(stepDuration);
+                }
+
+                onComplete?.Invoke();
+            }
+        }
     }
 }

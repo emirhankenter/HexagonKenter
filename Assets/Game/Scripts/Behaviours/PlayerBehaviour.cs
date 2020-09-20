@@ -1,5 +1,6 @@
 ﻿using Game.Scripts.Controllers;
 using Game.Scripts.Models;
+using Mek.Controllers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace Game.Scripts.Behaviours
 
         private (HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) _currentHexagonGroup;
 
+        private bool _canRotate = false;
+
         private void Awake()
         {
             InputActions = new InputActions();
@@ -33,6 +36,8 @@ namespace Game.Scripts.Behaviours
             InputActions.Player.Tap.canceled += OnTapCanceled;
 
             InputActions.Player.Fire.performed += OnFirePerformed;
+
+            Rotated += OnRotated;
         }
 
         private void OnDestroy()
@@ -42,6 +47,8 @@ namespace Game.Scripts.Behaviours
             InputActions.Player.Tap.canceled -= OnTapCanceled;
 
             InputActions.Player.Fire.performed -= OnFirePerformed;
+
+            Rotated -= OnRotated;
         }
 
         private void OnTapPerformed(InputAction.CallbackContext obj)
@@ -55,8 +62,7 @@ namespace Game.Scripts.Behaviours
                 if (hexagon.GetClosestNeighbours(mousePosition, out var neighbours))
                 {
                     SelectGroup((hexagon, neighbours.Item1, neighbours.Item2));
-
-                    GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise((hexagon, neighbours.Item1, neighbours.Item2), 0.2f, () => Debug.Log("Rotated"));
+                    _canRotate = true;
                 }
             }
         }
@@ -81,14 +87,16 @@ namespace Game.Scripts.Behaviours
         {
             var position = obj.ReadValue<Vector2>();
 
-            if (position.x >= 4)
+            if (!_canRotate) return;
+
+            if (position.x >= 2)
             {
                 Rotated?.Invoke(Direction.Right);
                 InputActions.Player.Move.performed -= OnMovePerformed;
                 return;
             }
 
-            if (position.x <= -4)
+            if (position.x <= -2)
             {
                 Rotated?.Invoke(Direction.Left);
                 InputActions.Player.Move.performed -= OnMovePerformed;
@@ -118,6 +126,36 @@ namespace Game.Scripts.Behaviours
                 _currentHexagonGroup.Item2 = null;
                 _currentHexagonGroup.Item3 = null;
             }
+        }
+
+        private void OnRotated(Direction direction)
+        {
+            _canRotate = false;
+            InputActions.Player.Tap.performed -= OnTapPerformed;
+            InputActions.Player.Tap.canceled -= OnTapCanceled;
+
+            switch (direction)
+            {
+                case Direction.Up:
+                    break;
+                case Direction.Down:
+                    break;
+                case Direction.Right:
+                    GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise(_currentHexagonGroup, 0.2f);
+                    break;
+                case Direction.Left:
+                    GameController.Instance.CurrentLevel.TileMap.RotateClockwise(_currentHexagonGroup, 0.2f);
+                    break;
+                default:
+                    break;
+            }
+
+            CoroutineController.DoAfterGivenTime(0.2f, () => 
+            {
+                _canRotate = true;
+                InputActions.Player.Tap.performed += OnTapPerformed;
+                InputActions.Player.Tap.canceled += OnTapCanceled;
+            });
         }
     }
 }
