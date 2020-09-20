@@ -197,10 +197,6 @@ namespace Game.Scripts.Helpers
                     group.Item2.transform.DOMove(temp3Positions, stepDuration);
                     group.Item3.transform.DOMove(temp1Positions, stepDuration);
 
-                    group.Item1.transform.DORotate(new Vector3(0, 0, 60), stepDuration, RotateMode.WorldAxisAdd);
-                    group.Item2.transform.DORotate(new Vector3(0, 0, 60), stepDuration, RotateMode.WorldAxisAdd);
-                    group.Item3.transform.DORotate(new Vector3(0, 0, 60), stepDuration, RotateMode.WorldAxisAdd);
-
                     var item1Indeces = _tileMap.FindIndex(group.Item1);
                     var item2Indeces = _tileMap.FindIndex(group.Item2);
                     var item3Indeces = _tileMap.FindIndex(group.Item3);
@@ -260,10 +256,6 @@ namespace Game.Scripts.Helpers
                     group.Item1.transform.DOMove(temp3Positions, stepDuration);
                     group.Item2.transform.DOMove(temp1Positions, stepDuration);
                     group.Item3.transform.DOMove(temp2Positions, stepDuration);
-
-                    group.Item1.transform.DORotate(new Vector3(0, 0, -60), stepDuration, RotateMode.WorldAxisAdd);
-                    group.Item2.transform.DORotate(new Vector3(0, 0, -60), stepDuration, RotateMode.WorldAxisAdd);
-                    group.Item3.transform.DORotate(new Vector3(0, 0, -60), stepDuration, RotateMode.WorldAxisAdd);
 
                     var item1Indeces = _tileMap.FindIndex(group.Item1);
                     var item2Indeces = _tileMap.FindIndex(group.Item2);
