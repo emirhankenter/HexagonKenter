@@ -170,54 +170,65 @@ namespace Game.Scripts.Helpers
             return _tileMap.FindIndex(hexagon);
         }
 
-        public void RotateAntiClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, Action onComplete)
+        public void RotateAntiClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, float stepDuration = 0.2f,  Action onComplete = null)
         {
-            var tempItem1 = group.Item1; // 0,1
-            var tempItem2 = group.Item2; // 0,0
-            var tempItem3 = group.Item3; // 1,0
-
-            HexagonBehaviour[,] tempArray;
-
-            tempArray = (HexagonBehaviour[,])_tileMap.Clone();
-
-            var temp1Positions = group.Item1.transform.position;
-            var temp2Positions = group.Item2.transform.position;
-            var temp3Positions = group.Item3.transform.position;
-
-            group.Item1.transform.DOMove(temp2Positions, 0.2f);
-            group.Item2.transform.DOMove(temp3Positions, 0.2f);
-            group.Item3.transform.DOMove(temp1Positions, 0.2f);
-
-            var item1Indeces = _tileMap.FindIndex(group.Item1);
-            var item2Indeces = _tileMap.FindIndex(group.Item2);
-            var item3Indeces = _tileMap.FindIndex(group.Item3);
-
-            for (int i = 0; i < Width; i++)
+            StartCoroutine(Rotate());
+            IEnumerator Rotate()
             {
-                for (int j = 0; j < Height; j++)
+                var index = 0;
+
+                while (index < 3)
                 {
-                    if (item1Indeces.i == i && item1Indeces.j == j)
+                    index++;
+
+                    var tempItem1 = group.Item1;
+                    var tempItem2 = group.Item2;
+                    var tempItem3 = group.Item3;
+
+                    HexagonBehaviour[,] tempArray;
+
+                    tempArray = (HexagonBehaviour[,])_tileMap.Clone();
+
+                    var temp1Positions = group.Item1.transform.position;
+                    var temp2Positions = group.Item2.transform.position;
+                    var temp3Positions = group.Item3.transform.position;
+
+                    group.Item1.transform.DOMove(temp2Positions, 0.2f);
+                    group.Item2.transform.DOMove(temp3Positions, 0.2f);
+                    group.Item3.transform.DOMove(temp1Positions, 0.2f);
+
+                    var item1Indeces = _tileMap.FindIndex(group.Item1);
+                    var item2Indeces = _tileMap.FindIndex(group.Item2);
+                    var item3Indeces = _tileMap.FindIndex(group.Item3);
+
+                    for (int i = 0; i < Width; i++)
                     {
-                        tempArray[i, j] = _tileMap[item3Indeces.i, item3Indeces.j];
+                        for (int j = 0; j < Height; j++)
+                        {
+                            if (item1Indeces.i == i && item1Indeces.j == j)
+                            {
+                                tempArray[i, j] = _tileMap[item3Indeces.i, item3Indeces.j];
+                            }
+                            else if (item2Indeces.i == i && item2Indeces.j == j)
+                            {
+                                tempArray[i, j] = _tileMap[item1Indeces.i, item1Indeces.j];
+                            }
+                            else if (item3Indeces.i == i && item3Indeces.j == j)
+                            {
+                                tempArray[i, j] = _tileMap[item2Indeces.i, item2Indeces.j];
+                            }
+                        }
                     }
-                    else if (item2Indeces.i == i && item2Indeces.j == j)
-                    {
-                        tempArray[i, j] = _tileMap[item1Indeces.i, item1Indeces.j];
-                    }
-                    else if (item3Indeces.i == i && item3Indeces.j == j)
-                    {
-                        tempArray[i, j] = _tileMap[item2Indeces.i, item2Indeces.j];
-                    }
+
+                    _tileMap = tempArray;
+
+                    UpdateIndexes();
+
+                    yield return new WaitForSeconds(stepDuration);
                 }
-            }
 
-            _tileMap = tempArray;
-
-            CoroutineController.DoAfterGivenTime(0.2f, () => 
-            {
                 onComplete?.Invoke();
-                UpdateIndexes();
-            });
+            }
         }
 
     }

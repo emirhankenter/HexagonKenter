@@ -56,7 +56,7 @@ namespace Game.Scripts.Behaviours
                 {
                     SelectGroup((hexagon, neighbours.Item1, neighbours.Item2));
 
-                    GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise((hexagon, neighbours.Item1, neighbours.Item2), () => GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise((hexagon, neighbours.Item1, neighbours.Item2), () => GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise((hexagon, neighbours.Item1, neighbours.Item2), () => Debug.Log("Rotated"))));
+                    GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise((hexagon, neighbours.Item1, neighbours.Item2), 0.2f, () => Debug.Log("Rotated"));
                 }
             }
         }
