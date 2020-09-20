@@ -8,8 +8,17 @@ using UnityEngine.InputSystem;
 
 namespace Game.Scripts.Behaviours
 {
+    public enum Direction
+    {
+        Up,
+        Down,
+        Right,
+        Left
+    }
     public class PlayerBehaviour : MonoBehaviour
     {
+        public static event Action<Direction> Rotated;
+
         [SerializeField] private LayerMask _targetLayer;
 
         public InputActions InputActions;
@@ -37,7 +46,6 @@ namespace Game.Scripts.Behaviours
 
         private void OnTapPerformed(InputAction.CallbackContext obj)
         {
-
             var mousePosition = GameController.Instance.CameraController.GetMouseWorldPosition();
 
             if (GameController.Instance.CurrentLevel.TileMap.TryGetHexagonAtPoint(mousePosition, out HexagonBehaviour hexagon))
@@ -47,6 +55,8 @@ namespace Game.Scripts.Behaviours
                 if (hexagon.GetClosestNeighbours(mousePosition, out var neighbours))
                 {
                     SelectGroup((hexagon, neighbours.Item1, neighbours.Item2));
+
+                    GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise((hexagon, neighbours.Item1, neighbours.Item2), () => GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise((hexagon, neighbours.Item1, neighbours.Item2), () => GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise((hexagon, neighbours.Item1, neighbours.Item2), () => Debug.Log("Rotated"))));
                 }
             }
         }
@@ -71,15 +81,29 @@ namespace Game.Scripts.Behaviours
         {
             var position = obj.ReadValue<Vector2>();
 
-            //Debug.Log($"({position.x}, {position.y})");
+            if (position.x >= 4)
+            {
+                Rotated?.Invoke(Direction.Right);
+                InputActions.Player.Move.performed -= OnMovePerformed;
+                return;
+            }
+
+            if (position.x <= -4)
+            {
+                Rotated?.Invoke(Direction.Left);
+                InputActions.Player.Move.performed -= OnMovePerformed;
+                return;
+            }
+
+            Debug.Log($"({position.x}, {position.y})");
         }
 
         private void SelectGroup((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group)
         {
             _currentHexagonGroup = group;
-            _currentHexagonGroup.Item1.GetComponent<SpriteRenderer>().color = Color.green;
+            _currentHexagonGroup.Item1.GetComponent<SpriteRenderer>().color = Color.red;
             _currentHexagonGroup.Item2.GetComponent<SpriteRenderer>().color = Color.green;
-            _currentHexagonGroup.Item3.GetComponent<SpriteRenderer>().color = Color.green;
+            _currentHexagonGroup.Item3.GetComponent<SpriteRenderer>().color = Color.blue;
         }
 
         private void Deselect()

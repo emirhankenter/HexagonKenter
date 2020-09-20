@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Game.Scripts.Helpers
 {
@@ -23,6 +24,13 @@ namespace Game.Scripts.Helpers
             }
 
             throw new ArgumentOutOfRangeException("Could not find the element in the given array");
+        }
+
+        public static T GetRandomElement<T>(this T[] array)
+        {
+            var random = new Random(DateTime.Now.ToString().GetHashCode());
+            var index = random.Next(array.Length);
+            return array[index];
         }
     }
 }

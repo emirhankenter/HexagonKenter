@@ -24,7 +24,7 @@ namespace Game.Scripts.Behaviours
 
         public Hexagon<HexagonBehaviour> Hexagon = new Hexagon<HexagonBehaviour>();
 
-        public bool GetRighUpAndRightDownNeighbours(out (HexagonBehaviour rightUp, HexagonBehaviour rightDown) neighbours)
+        public bool GetRighUpAndRightDownNeighbours(out (HexagonBehaviour rightDown, HexagonBehaviour rightUp) neighbours)
         {
             if (Hexagon.RightUp != null && Hexagon.RightDown != null)
             {
@@ -38,7 +38,7 @@ namespace Game.Scripts.Behaviours
             return false;
         }
 
-        public bool GetUpAndRightUpNeighbours(out (HexagonBehaviour up, HexagonBehaviour rightUp) neighbours)
+        public bool GetUpAndRightUpNeighbours(out (HexagonBehaviour rightUp, HexagonBehaviour up) neighbours)
         {
             if (Hexagon.Up != null && Hexagon.RightUp != null)
             {
@@ -80,7 +80,7 @@ namespace Game.Scripts.Behaviours
             return false;
         }
 
-        public bool GetDownAndLeftDownNeighbours(out (HexagonBehaviour down, HexagonBehaviour leftDown) neighbours)
+        public bool GetDownAndLeftDownNeighbours(out (HexagonBehaviour leftDown, HexagonBehaviour down) neighbours)
         {
             if (Hexagon.LeftDown != null && Hexagon.Down != null)
             {
@@ -115,6 +115,8 @@ namespace Game.Scripts.Behaviours
             if (1 / difference.x < 0) radians += Math.PI;
             if (1 / radians < 0) radians += 2 * Math.PI;
             var degrees = radians * 180f / Math.PI;
+
+            //Debug.Log($"Degrees: {degrees}");
 
             if (degrees > 330f || degrees <= 30f)
             {

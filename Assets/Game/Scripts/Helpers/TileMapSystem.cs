@@ -1,4 +1,7 @@
-﻿using Game.Scripts.Behaviours;
+﻿using DG.Tweening;
+using Game.Scripts.Behaviours;
+using Mek.Controllers;
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,17 +56,25 @@ namespace Game.Scripts.Helpers
                 }
             }
 
-            for (int i = 0; i < width; i++)
+            UpdateIndexes();
+
+            return _tileMap;
+        }
+
+        private void UpdateIndexes()
+        {
+            for (int i = 0; i < Width; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < Height; j++)
                 {
+                    _tileMap[i, j].name = $"Tile ({i},{j})";
                     if (i > 0)
                     {
                         if (i % 2 == 1)
                         {
-                            _tileMap[i,j].Hexagon.LeftDown = _tileMap[i - 1, j];
+                            _tileMap[i, j].Hexagon.LeftDown = _tileMap[i - 1, j];
 
-                            if (j < height - 1)
+                            if (j < Height - 1)
                             {
                                 _tileMap[i, j].Hexagon.LeftUp = _tileMap[i - 1, j + 1];
                             }
@@ -72,23 +83,23 @@ namespace Game.Scripts.Helpers
                         {
                             if (j > 0)
                             {
-                                _tileMap[i, j].Hexagon.LeftDown = _tileMap[i - 1, j- 1];
+                                _tileMap[i, j].Hexagon.LeftDown = _tileMap[i - 1, j - 1];
                             }
 
-                            if (j < height - 1)
+                            if (j < Height - 1)
                             {
                                 _tileMap[i, j].Hexagon.LeftUp = _tileMap[i - 1, j];
                             }
                         }
                     }
 
-                    if (i < width - 1)
+                    if (i < Width - 1)
                     {
                         if (i % 2 == 1)
                         {
                             _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j];
 
-                            if (j < height - 1)
+                            if (j < Height - 1)
                             {
                                 _tileMap[i, j].Hexagon.RightUp = _tileMap[i + 1, j + 1];
                             }
@@ -100,7 +111,7 @@ namespace Game.Scripts.Helpers
                                 _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j - 1];
                             }
 
-                            if (j < height - 1)
+                            if (j < Height - 1)
                             {
                                 _tileMap[i, j].Hexagon.RightUp = _tileMap[i + 1, j];
                             }
@@ -112,14 +123,12 @@ namespace Game.Scripts.Helpers
                         _tileMap[i, j].Hexagon.Down = _tileMap[i, j - 1];
                     }
 
-                    if (j < height - 1)
+                    if (j < Height - 1)
                     {
                         _tileMap[i, j].Hexagon.Up = _tileMap[i, j + 1];
                     }
                 }
             }
-
-            return _tileMap;
         }
 
         public bool IsInside(Vector2 origin, Vector2 position)
@@ -160,5 +169,56 @@ namespace Game.Scripts.Helpers
         {
             return _tileMap.FindIndex(hexagon);
         }
+
+        public void RotateAntiClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, Action onComplete)
+        {
+            var tempItem1 = group.Item1; // 0,1
+            var tempItem2 = group.Item2; // 0,0
+            var tempItem3 = group.Item3; // 1,0
+
+            HexagonBehaviour[,] tempArray;
+
+            tempArray = (HexagonBehaviour[,])_tileMap.Clone();
+
+            var temp1Positions = group.Item1.transform.position;
+            var temp2Positions = group.Item2.transform.position;
+            var temp3Positions = group.Item3.transform.position;
+
+            group.Item1.transform.DOMove(temp2Positions, 0.2f);
+            group.Item2.transform.DOMove(temp3Positions, 0.2f);
+            group.Item3.transform.DOMove(temp1Positions, 0.2f);
+
+            var item1Indeces = _tileMap.FindIndex(group.Item1);
+            var item2Indeces = _tileMap.FindIndex(group.Item2);
+            var item3Indeces = _tileMap.FindIndex(group.Item3);
+
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    if (item1Indeces.i == i && item1Indeces.j == j)
+                    {
+                        tempArray[i, j] = _tileMap[item3Indeces.i, item3Indeces.j];
+                    }
+                    else if (item2Indeces.i == i && item2Indeces.j == j)
+                    {
+                        tempArray[i, j] = _tileMap[item1Indeces.i, item1Indeces.j];
+                    }
+                    else if (item3Indeces.i == i && item3Indeces.j == j)
+                    {
+                        tempArray[i, j] = _tileMap[item2Indeces.i, item2Indeces.j];
+                    }
+                }
+            }
+
+            _tileMap = tempArray;
+
+            CoroutineController.DoAfterGivenTime(0.2f, () => 
+            {
+                onComplete?.Invoke();
+                UpdateIndexes();
+            });
+        }
+
     }
 }
