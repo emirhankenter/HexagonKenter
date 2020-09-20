@@ -30,10 +30,6 @@ namespace Game.Scripts.Controllers
             }
         }
 
-        public int i;
-        public int j;
-        public Color color;
-
         private void Awake()
         {
             PrepareLevel();
@@ -48,18 +44,6 @@ namespace Game.Scripts.Controllers
 
         private void DisposeLevel()
         {
-        }
-
-        [Button]
-        public void ChangeColorOfHexagon()
-        {
-            var hexagon = CurrentLevel.TileMap.GetHexagonAtIndex(i, j);
-
-            var hexagonGroup = hexagon.GetGroup();
-
-            hexagonGroup.Item1.GetComponent<SpriteRenderer>().color = color;
-            hexagonGroup.Item2.GetComponent<SpriteRenderer>().color = color;
-            hexagonGroup.Item3.GetComponent<SpriteRenderer>().color = color;
         }
 
         #region Singleton
