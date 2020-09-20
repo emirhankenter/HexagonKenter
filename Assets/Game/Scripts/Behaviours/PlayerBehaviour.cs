@@ -63,6 +63,8 @@ namespace Game.Scripts.Behaviours
                 {
                     SelectGroup((hexagon, neighbours.Item1, neighbours.Item2));
                     _canRotate = true;
+
+                    Debug.Log($"NeighboursCanMatch: {hexagon.CheckIfNeighboursCanMatch()}");
                 }
             }
         }
@@ -109,9 +111,6 @@ namespace Game.Scripts.Behaviours
         private void SelectGroup((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group)
         {
             _currentHexagonGroup = group;
-            //_currentHexagonGroup.Item1.GetComponent<SpriteRenderer>().color = Color.red;
-            //_currentHexagonGroup.Item2.GetComponent<SpriteRenderer>().color = Color.green;
-            //_currentHexagonGroup.Item3.GetComponent<SpriteRenderer>().color = Color.blue;
 
             _currentHexagonGroup.Item1.Select();
             _currentHexagonGroup.Item2.Select();
@@ -122,10 +121,6 @@ namespace Game.Scripts.Behaviours
         {
             if (_currentHexagonGroup.Item1 != null && _currentHexagonGroup.Item2 != null && _currentHexagonGroup.Item3 != null)
             {
-                //_currentHexagonGroup.Item1.GetComponent<SpriteRenderer>().color = Color.white;
-                //_currentHexagonGroup.Item2.GetComponent<SpriteRenderer>().color = Color.white;
-                //_currentHexagonGroup.Item3.GetComponent<SpriteRenderer>().color = Color.white;
-
                 _currentHexagonGroup.Item1.Deselect();
                 _currentHexagonGroup.Item2.Deselect();
                 _currentHexagonGroup.Item3.Deselect();

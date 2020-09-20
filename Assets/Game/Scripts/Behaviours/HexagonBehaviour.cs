@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Scripts.Behaviours
@@ -35,7 +36,6 @@ namespace Game.Scripts.Behaviours
 
             _hexagonSprite.color = color;
         }
-
         public void Select()
         {
             _outlineSprite.enabled = true;
@@ -43,6 +43,64 @@ namespace Game.Scripts.Behaviours
         public void Deselect()
         {
             _outlineSprite.enabled = false;
+        }
+
+        public bool CheckIfNeighboursCanMatch()
+        {
+            var dict = new Dictionary<Color, int>();
+
+            if (Hexagon.Up != null)
+            {
+                if (dict.ContainsKey(Hexagon.Up.Color))
+                    dict[Hexagon.Up.Color]++;
+                else
+                    dict[Hexagon.Up.Color] = 1;
+            }
+            if (Hexagon.Down != null)
+            {
+                if (dict.ContainsKey(Hexagon.Down.Color))
+                    dict[Hexagon.Down.Color]++;
+                else
+                    dict[Hexagon.Down.Color] = 1;
+            }
+            if (Hexagon.RightUp != null)
+            {
+                if (dict.ContainsKey(Hexagon.RightUp.Color))
+                    dict[Hexagon.RightUp.Color]++;
+                else
+                    dict[Hexagon.RightUp.Color] = 1;
+            }
+            if (Hexagon.RightDown != null)
+            {
+                if (dict.ContainsKey(Hexagon.RightDown.Color))
+                    dict[Hexagon.RightDown.Color]++;
+                else
+                    dict[Hexagon.RightDown.Color] = 1;
+            }
+            if (Hexagon.LeftUp != null)
+            {
+                if (dict.ContainsKey(Hexagon.LeftUp.Color))
+                    dict[Hexagon.LeftUp.Color]++;
+                else
+                    dict[Hexagon.LeftUp.Color] = 1;
+            }
+            if (Hexagon.LeftDown != null)
+            {
+                if (dict.ContainsKey(Hexagon.LeftDown.Color))
+                    dict[Hexagon.LeftDown.Color]++;
+                else
+                    dict[Hexagon.LeftDown.Color] = 1;
+            }
+
+            foreach (var pair in dict)
+            {
+                if (pair.Value >= 3)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool GetRighUpAndRightDownNeighbours(out (HexagonBehaviour rightDown, HexagonBehaviour rightUp) neighbours)

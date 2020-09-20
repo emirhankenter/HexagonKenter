@@ -10,8 +10,6 @@ namespace Game.Scripts.Controllers
 {
     public class GameController : MonoBehaviour
     {
-        [SerializeField] private TileMapSystem _tileMapGenerator;
-
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeX;
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeY;
 

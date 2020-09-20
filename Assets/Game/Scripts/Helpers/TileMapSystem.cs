@@ -1,10 +1,8 @@
 ﻿using DG.Tweening;
 using Game.Scripts.Behaviours;
-using Mek.Controllers;
-using NaughtyAttributes;
+using Game.Scripts.Controllers;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Scripts.Helpers
@@ -20,8 +18,6 @@ namespace Game.Scripts.Helpers
 
         protected float HorizontalLenght;
         protected float VerticalLenght;
-
-        protected Color[] Colors = { Color.red, Color.green, Color.blue, Color.cyan, Color.yellow, Color.magenta};
 
         public HexagonBehaviour[,] CreateHexagonTileMap(int width, int height, Transform parent)
         {
@@ -44,7 +40,7 @@ namespace Game.Scripts.Helpers
                     var hexagon = Instantiate(item as HexagonBehaviour, parent);
                     _tileMap[i, j] = hexagon;
 
-                    hexagon.Initialize(Colors.GetRandomElement());
+                    hexagon.Initialize(AssetController.Instance.Colors.GetRandomElement());
 
                     hexagon.name = $"Tile ({i},{j})";
 
