@@ -184,6 +184,7 @@ namespace Game.Scripts.Helpers
         public void RotateAntiClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, Action<bool> onComplete, float stepDuration = 0.2f)
         {
             StartCoroutine(Rotate());
+
             IEnumerator Rotate()
             {
                 var index = 0;
@@ -237,19 +238,28 @@ namespace Game.Scripts.Helpers
 
                     yield return new WaitForSeconds(stepDuration);
 
-                    var matchingHexagons = GetMatchingHexagons();
-
-                    if (matchingHexagons.Count > 0)
+                    if (CheckMatching())
                     {
                         onComplete?.Invoke(true);
-
-                        foreach (var item in matchingHexagons)
-                        {
-                            Destroy(item.gameObject);
-                        }
-
                         index = 100;
+                        yield break;
                     }
+
+                    //var matchingHexagons = GetMatchingHexagons(out var indexes);
+
+                    //if (matchingHexagons.Count > 0)
+                    //{
+                    //    onComplete?.Invoke(true);
+
+                    //    foreach (var item in matchingHexagons)
+                    //    {
+                    //        Destroy(item.gameObject);
+                    //    }
+
+                    //    SpawnHexagonsFromTop(indexes);
+
+                    //    index = 100;
+                    //}
                 }
 
                 onComplete?.Invoke(false);
@@ -311,19 +321,28 @@ namespace Game.Scripts.Helpers
 
                     yield return new WaitForSeconds(stepDuration);
 
-                    var matchingHexagons = GetMatchingHexagons();
-
-                    if (matchingHexagons.Count > 0)
+                    if (CheckMatching())
                     {
-                        onComplete.Invoke(true);
-
-                        foreach (var item in matchingHexagons)
-                        {
-                            Destroy(item.gameObject);
-                        }
-
+                        onComplete?.Invoke(true);
                         index = 100;
+                        yield break;
                     }
+
+                    //var matchingHexagons = GetMatchingHexagons(out var indexes);
+
+                    //if (matchingHexagons.Count > 0)
+                    //{
+                    //    onComplete.Invoke(true);
+
+                    //    foreach (var item in matchingHexagons)
+                    //    {
+                    //        Destroy(item.gameObject);
+                    //    }
+
+                    //    SpawnHexagonsFromTop(indexes);
+
+                    //    index = 100;
+                    //}
                 }
 
                 onComplete?.Invoke(false);
@@ -334,7 +353,28 @@ namespace Game.Scripts.Helpers
         {
             var list = new List<HexagonBehaviour>();
 
-            var dictionary = new Dictionary<int, int>();
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    var matches = _tileMap[i, j].GetMatches();
+                    if (matches.Count > 0)
+                    {
+                        foreach (var item in matches)
+                        {
+                            if (!list.Contains(item)) list.Add(item);
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        private List<HexagonBehaviour> GetMatchingHexagons(out List<(int, int)> indexes)
+        {
+            var list = new List<HexagonBehaviour>();
+
+            indexes = new List<(int, int)>();
 
             for (int i = 0; i < Width; i++)
             {
@@ -345,10 +385,9 @@ namespace Game.Scripts.Helpers
                     {
                         foreach (var item in matches)
                         {
-                            if (!list.Contains(item))
-                            {
-                                list.Add(item);
-                            }
+                            if (!indexes.Contains((i, j))) indexes.Add((i, j));
+
+                            if (!list.Contains(item)) list.Add(item);
                         }
                     }
                 }
@@ -362,6 +401,40 @@ namespace Game.Scripts.Helpers
             {
                 item.Initialize(AssetController.Instance.Colors.GetRandomElement());
             }
+        }
+
+        private bool CheckMatching()
+        {
+            var matchingHexagons = GetMatchingHexagons(out var indexes);
+
+            if (matchingHexagons.Count > 0)
+            {
+                foreach (var item in matchingHexagons)
+                {
+                    Destroy(item.gameObject);
+                }
+
+                SpawnHexagonsFromTop(indexes);
+                UpdateIndexes();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private void SpawnHexagonsFromTop(List<(int, int)> indexes)
+        {
+            var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
+
+            foreach (var index in indexes)
+            {
+                var hexagon = Instantiate(item as HexagonBehaviour, new Vector3(HexagonBehaviour.TileXOffset * index.Item1, HexagonBehaviour.TileYOffset * Height + 1, 0), Quaternion.identity);
+                hexagon.Initialize(AssetController.Instance.Colors.GetRandomElement());
+                _tileMap[index.Item1, index.Item2] = hexagon;
+                hexagon.transform.DOMove(new Vector3(HexagonBehaviour.TileXOffset * index.Item1, HexagonBehaviour.TileYOffset * index.Item2 + (index.Item1 % 2 == 1 ? HexagonBehaviour.TileYOffset / 2 : 0) , 0), 0.6f);
+            }
+            CoroutineController.DoAfterGivenTime(0.6f, () => CheckMatching());
         }
     }
 }
