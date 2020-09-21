@@ -45,6 +45,17 @@ namespace Mek.Controllers
             Instance.DoAfterTime(time, onComplete);
         }
 
+        public static void DoAfterFixedUpdate(Action onComplete)
+        {
+            StartCoroutine("WaitFixedUpdate", FixedUpdateRoutine());
+
+            IEnumerator FixedUpdateRoutine()
+            {
+                yield return new WaitForFixedUpdate();
+                onComplete?.Invoke();
+            }
+        }
+
         private void DoAfterTime(float time, Action onComplete)
         {
             StartCoroutine(TimeRoutine(time, () => { onComplete?.Invoke(); }));
@@ -60,7 +71,6 @@ namespace Mek.Controllers
 
             onComplete?.Invoke();
         }
-
 
         #endregion
 

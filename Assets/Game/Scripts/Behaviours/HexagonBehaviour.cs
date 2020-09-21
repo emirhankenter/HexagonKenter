@@ -103,6 +103,68 @@ namespace Game.Scripts.Behaviours
             return false;
         }
 
+        public List<HexagonBehaviour> GetMatches()
+        {
+            var list = new List<HexagonBehaviour>();
+
+            if (GetRighUpAndRightDownNeighbours(out var neightbours1))
+            {
+                if (Color == neightbours1.Item1.Color && Color == neightbours1.Item2.Color)
+                {
+                    if (!list.Contains(this)) list.Add(this);
+                    if (!list.Contains(neightbours1.Item1)) list.Add(neightbours1.Item1);
+                    if (!list.Contains(neightbours1.Item2)) list.Add(neightbours1.Item2);
+                }
+            }
+            if (GetUpAndRightUpNeighbours(out var neightbours2))
+            {
+                if (Color == neightbours2.Item1.Color && Color == neightbours2.Item2.Color)
+                {
+                    if (!list.Contains(this)) list.Add(this);
+                    if (!list.Contains(neightbours2.Item1)) list.Add(neightbours2.Item1);
+                    if (!list.Contains(neightbours2.Item2)) list.Add(neightbours2.Item2);
+                }
+            }
+            if (GetUpAndLeftUpNeighbours(out var neightbours3))
+            {
+                if (Color == neightbours3.Item1.Color && Color == neightbours3.Item2.Color)
+                {
+                    if (!list.Contains(this)) list.Add(this);
+                    if (!list.Contains(neightbours3.Item1)) list.Add(neightbours3.Item1);
+                    if (!list.Contains(neightbours3.Item2)) list.Add(neightbours3.Item2);
+                }
+            }
+            if (GetLeftUpAndLeftDownNeighbours(out var neightbours4))
+            {
+                if (Color == neightbours4.Item1.Color && Color == neightbours4.Item2.Color)
+                {
+                    if (!list.Contains(this)) list.Add(this);
+                    if (!list.Contains(neightbours4.Item1)) list.Add(neightbours4.Item1);
+                    if (!list.Contains(neightbours4.Item2)) list.Add(neightbours4.Item2);
+                }
+            }
+            if (GetDownAndLeftDownNeighbours(out var neightbours5))
+            {
+                if (Color == neightbours5.Item1.Color && Color == neightbours5.Item2.Color)
+                {
+                    if (!list.Contains(this)) list.Add(this);
+                    if (!list.Contains(neightbours5.Item1)) list.Add(neightbours5.Item1);
+                    if (!list.Contains(neightbours5.Item2)) list.Add(neightbours5.Item2);
+                }
+            }
+            if (GetDownAndRightDownNeighbours(out var neightbours6))
+            {
+                if (Color == neightbours6.Item1.Color && Color == neightbours6.Item2.Color)
+                {
+                    if (!list.Contains(this)) list.Add(this);
+                    if (!list.Contains(neightbours6.Item1)) list.Add(neightbours6.Item1);
+                    if (!list.Contains(neightbours6.Item2)) list.Add(neightbours6.Item2);
+                }
+            }
+
+            return list;
+        }
+
         public bool GetRighUpAndRightDownNeighbours(out (HexagonBehaviour rightDown, HexagonBehaviour rightUp) neighbours)
         {
             if (Hexagon.RightUp != null && Hexagon.RightDown != null)
@@ -228,13 +290,13 @@ namespace Game.Scripts.Behaviours
 
                 if (closeToLeft)
                 {
-                    if (GetUpAndRightUpNeighbours(out neighbours)) return true;
-                    else if (GetDownAndRightDownNeighbours(out neighbours)) return true;
+                    //if (GetUpAndRightUpNeighbours(out neighbours)) return true;
+                    //else if (GetDownAndRightDownNeighbours(out neighbours)) return true;
                 }
                 else
                 {
-                    if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
-                    else if (GetDownAndLeftDownNeighbours(out neighbours)) return true;
+                    //if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
+                    //else if (GetDownAndLeftDownNeighbours(out neighbours)) return true;
                 }
             }
             else
@@ -243,13 +305,13 @@ namespace Game.Scripts.Behaviours
 
                 if (closeToLeft)
                 {
-                    if (GetLeftUpAndLeftDownNeighbours(out neighbours)) return true;
-                    else if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
+                    //if (GetLeftUpAndLeftDownNeighbours(out neighbours)) return true;
+                    //else if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
                 }
                 else
                 {
-                    if (GetRighUpAndRightDownNeighbours(out neighbours)) return true;
-                    else if (GetUpAndRightUpNeighbours(out neighbours)) return true;
+                    //if (GetRighUpAndRightDownNeighbours(out neighbours)) return true;
+                    //else if (GetUpAndRightUpNeighbours(out neighbours)) return true;
                 }
             }
 

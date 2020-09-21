@@ -105,7 +105,7 @@ namespace Game.Scripts.Behaviours
                 return;
             }
 
-            Debug.Log($"({position.x}, {position.y})");
+            //Debug.Log($"({position.x}, {position.y})");
         }
 
         private void SelectGroup((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group)
@@ -144,16 +144,21 @@ namespace Game.Scripts.Behaviours
                 case Direction.Down:
                     break;
                 case Direction.Right:
-                    GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise(_currentHexagonGroup, 0.2f);
+                    GameController.Instance.CurrentLevel.TileMap.RotateAntiClockwise(_currentHexagonGroup, OnRotateCompleted, 0.2f); ;
                     break;
                 case Direction.Left:
-                    GameController.Instance.CurrentLevel.TileMap.RotateClockwise(_currentHexagonGroup, 0.2f);
+                    GameController.Instance.CurrentLevel.TileMap.RotateClockwise(_currentHexagonGroup, OnRotateCompleted, 0.2f);
                     break;
                 default:
                     break;
             }
 
-            CoroutineController.DoAfterGivenTime(0.2f, () => 
+            void OnRotateCompleted(bool state)
+            {
+                if (state) Deselect();
+            }
+
+            CoroutineController.DoAfterGivenTime(0.6f, () => 
             {
                 _canRotate = true;
                 InputActions.Player.Tap.performed += OnTapPerformed;

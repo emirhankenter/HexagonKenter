@@ -1,8 +1,10 @@
 ﻿using DG.Tweening;
 using Game.Scripts.Behaviours;
 using Game.Scripts.Controllers;
+using Mek.Controllers;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Scripts.Helpers
@@ -52,11 +54,19 @@ namespace Game.Scripts.Helpers
                     {
                         hexagon.transform.localPosition = new Vector3(i * HexagonBehaviour.TileXOffset, j * HexagonBehaviour.TileYOffset + HexagonBehaviour.TileYOffset / 2, 0);
                     }
-
                 }
             }
 
             UpdateIndexes();
+
+            var matchingHexagons = GetMatchingHexagons();
+
+            while (matchingHexagons.Count > 0)
+            {
+                ReInitializeMathing(matchingHexagons);
+
+                matchingHexagons = GetMatchingHexagons();
+            }
 
             return _tileMap;
         }
@@ -171,7 +181,7 @@ namespace Game.Scripts.Helpers
             return _tileMap.FindIndex(hexagon);
         }
 
-        public void RotateAntiClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, float stepDuration = 0.2f,  Action onComplete = null)
+        public void RotateAntiClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, Action<bool> onComplete, float stepDuration = 0.2f)
         {
             StartCoroutine(Rotate());
             IEnumerator Rotate()
@@ -226,12 +236,26 @@ namespace Game.Scripts.Helpers
                     UpdateIndexes();
 
                     yield return new WaitForSeconds(stepDuration);
+
+                    var matchingHexagons = GetMatchingHexagons();
+
+                    if (matchingHexagons.Count > 0)
+                    {
+                        onComplete?.Invoke(true);
+
+                        foreach (var item in matchingHexagons)
+                        {
+                            Destroy(item.gameObject);
+                        }
+
+                        index = 100;
+                    }
                 }
 
-                onComplete?.Invoke();
+                onComplete?.Invoke(false);
             }
         }
-        public void RotateClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, float stepDuration = 0.2f, Action onComplete = null)
+        public void RotateClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, Action<bool> onComplete, float stepDuration = 0.2f)
         {
             StartCoroutine(Rotate());
             IEnumerator Rotate()
@@ -286,9 +310,57 @@ namespace Game.Scripts.Helpers
                     UpdateIndexes();
 
                     yield return new WaitForSeconds(stepDuration);
+
+                    var matchingHexagons = GetMatchingHexagons();
+
+                    if (matchingHexagons.Count > 0)
+                    {
+                        onComplete.Invoke(true);
+
+                        foreach (var item in matchingHexagons)
+                        {
+                            Destroy(item.gameObject);
+                        }
+
+                        index = 100;
+                    }
                 }
 
-                onComplete?.Invoke();
+                onComplete?.Invoke(false);
+            }
+        }
+
+        private List<HexagonBehaviour> GetMatchingHexagons()
+        {
+            var list = new List<HexagonBehaviour>();
+
+            var dictionary = new Dictionary<int, int>();
+
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    var matches = _tileMap[i, j].GetMatches();
+                    if (matches.Count > 0)
+                    {
+                        foreach (var item in matches)
+                        {
+                            if (!list.Contains(item))
+                            {
+                                list.Add(item);
+                            }
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        private void ReInitializeMathing(List<HexagonBehaviour> list)
+        {
+            foreach (var item in list)
+            {
+                item.Initialize(AssetController.Instance.Colors.GetRandomElement());
             }
         }
     }
