@@ -68,6 +68,7 @@ namespace Game.Scripts.Helpers
                 for (int j = 0; j < Height; j++)
                 {
                     _tileMap[i, j].name = $"Tile ({i},{j})";
+                    _tileMap[i, j].Hexagon = new Hexagon<HexagonBehaviour>();
                     if (i > 0)
                     {
                         if (i % 2 == 1)
