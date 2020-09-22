@@ -351,10 +351,10 @@ namespace Game.Scripts.Helpers
                     var matches = _tileMap[i, j].GetMatches();
                     if (matches.Count > 0)
                     {
+                        if (!indexes.Contains((i, j))) indexes.Add((i, j));
+
                         foreach (var item in matches)
                         {
-                            if (!indexes.Contains((i, j))) indexes.Add((i, j));
-
                             if (!list.Contains(item)) list.Add(item);
                         }
                     }
