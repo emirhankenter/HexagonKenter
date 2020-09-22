@@ -244,22 +244,6 @@ namespace Game.Scripts.Helpers
                         index = 100;
                         yield break;
                     }
-
-                    //var matchingHexagons = GetMatchingHexagons(out var indexes);
-
-                    //if (matchingHexagons.Count > 0)
-                    //{
-                    //    onComplete?.Invoke(true);
-
-                    //    foreach (var item in matchingHexagons)
-                    //    {
-                    //        Destroy(item.gameObject);
-                    //    }
-
-                    //    SpawnHexagonsFromTop(indexes);
-
-                    //    index = 100;
-                    //}
                 }
 
                 onComplete?.Invoke(false);
@@ -327,22 +311,6 @@ namespace Game.Scripts.Helpers
                         index = 100;
                         yield break;
                     }
-
-                    //var matchingHexagons = GetMatchingHexagons(out var indexes);
-
-                    //if (matchingHexagons.Count > 0)
-                    //{
-                    //    onComplete.Invoke(true);
-
-                    //    foreach (var item in matchingHexagons)
-                    //    {
-                    //        Destroy(item.gameObject);
-                    //    }
-
-                    //    SpawnHexagonsFromTop(indexes);
-
-                    //    index = 100;
-                    //}
                 }
 
                 onComplete?.Invoke(false);
@@ -414,7 +382,7 @@ namespace Game.Scripts.Helpers
                     Destroy(item.gameObject);
                 }
 
-                SpawnHexagonsFromTop(indexes);
+                SlideHexagonsDown(indexes);
                 UpdateIndexes();
 
                 return true;
@@ -434,6 +402,57 @@ namespace Game.Scripts.Helpers
                 _tileMap[index.Item1, index.Item2] = hexagon;
                 hexagon.transform.DOMove(new Vector3(HexagonBehaviour.TileXOffset * index.Item1, HexagonBehaviour.TileYOffset * index.Item2 + (index.Item1 % 2 == 1 ? HexagonBehaviour.TileYOffset / 2 : 0) , 0), 0.6f);
             }
+            CoroutineController.DoAfterGivenTime(0.6f, () => CheckMatching());
+        }
+
+        private void SlideHexagonsDown(List<(int, int)> indexes)
+        {
+            var dictionary = new Dictionary<int, (int, int)>(); // (first dimension, (highest second dimension, count of vertical loss))
+
+            foreach (var index in indexes)
+            {
+                if (!dictionary.ContainsKey(index.Item1))
+                {
+                    dictionary[index.Item1] = (index.Item2, 1);
+                }
+                else
+                {
+                    if (dictionary[index.Item1].Item1 < index.Item2)
+                    {
+                        dictionary[index.Item1] = (index.Item2, dictionary[index.Item1].Item2 + 1);
+                    }
+                }
+            }
+
+            foreach (var pair in dictionary)
+            {
+                for (int j = pair.Value.Item1 + 1; j < Height; j++)
+                {
+                    var indexJ = j - pair.Value.Item2;
+                    _tileMap[pair.Key, indexJ] = _tileMap[pair.Key, j];
+                    _tileMap[pair.Key, indexJ].transform.DOMove(new Vector3(_tileMap[pair.Key, indexJ].transform.position.x, _tileMap[pair.Key, indexJ].transform.position.y - HexagonBehaviour.TileYOffset * pair.Value.Item2), 0.2f);
+                }
+            }
+            SpawnHexagonsFromTopTest(dictionary);
+        }
+
+        private void SpawnHexagonsFromTopTest(Dictionary<int, (int, int)> dictionary)
+        {
+            var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
+
+            foreach (var pair in dictionary)
+            {
+                for (int j = 0; j < pair.Value.Item2; j++)
+                {
+                    var hexagon = Instantiate(item as HexagonBehaviour, new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * Height + 1, 0), Quaternion.identity);
+                    hexagon.Initialize(AssetController.Instance.Colors.GetRandomElement());
+                    _tileMap[pair.Key, Height - pair.Value.Item2 + j] = hexagon;
+                    hexagon.transform.DOMove(new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * (Height - pair.Value.Item2 + j) + (pair.Key % 2 == 1 ? HexagonBehaviour.TileYOffset / 2 : 0), 0), 0.6f);
+                }
+            }
+
+            UpdateIndexes();
+
             CoroutineController.DoAfterGivenTime(0.6f, () => CheckMatching());
         }
     }
