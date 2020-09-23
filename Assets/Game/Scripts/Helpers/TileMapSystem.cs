@@ -89,6 +89,7 @@ namespace Game.Scripts.Helpers
                             {
                                 _tileMap[i, j].Hexagon.LeftUp = _tileMap[i - 1, j + 1];
                             }
+
                         }
                         else
                         {
@@ -97,10 +98,8 @@ namespace Game.Scripts.Helpers
                                 _tileMap[i, j].Hexagon.LeftDown = _tileMap[i - 1, j - 1];
                             }
 
-                            if (j < Height - 1)
-                            {
-                                _tileMap[i, j].Hexagon.LeftUp = _tileMap[i - 1, j];
-                            }
+                             _tileMap[i, j].Hexagon.LeftUp = _tileMap[i - 1, j];
+
                         }
                     }
 
@@ -122,10 +121,8 @@ namespace Game.Scripts.Helpers
                                 _tileMap[i, j].Hexagon.RightDown = _tileMap[i + 1, j - 1];
                             }
 
-                            if (j < Height - 1)
-                            {
-                                _tileMap[i, j].Hexagon.RightUp = _tileMap[i + 1, j];
-                            }
+                            _tileMap[i, j].Hexagon.RightUp = _tileMap[i + 1, j];
+
                         }
                     }
 
@@ -381,8 +378,9 @@ namespace Game.Scripts.Helpers
                 {
                     Destroy(item.gameObject);
                 }
-
+                //SpawnHexagonsFromTop(indexes);
                 SlideHexagonsDown(indexes);
+
                 UpdateIndexes();
 
                 return true;
@@ -433,6 +431,7 @@ namespace Game.Scripts.Helpers
                     _tileMap[pair.Key, indexJ].transform.DOMove(new Vector3(_tileMap[pair.Key, indexJ].transform.position.x, _tileMap[pair.Key, indexJ].transform.position.y - HexagonBehaviour.TileYOffset * pair.Value.Item2), 0.2f);
                 }
             }
+
             SpawnHexagonsFromTopTest(dictionary);
         }
 
@@ -445,6 +444,7 @@ namespace Game.Scripts.Helpers
                 for (int j = 0; j < pair.Value.Item2; j++)
                 {
                     var hexagon = Instantiate(item as HexagonBehaviour, new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * Height + 1, 0), Quaternion.identity);
+                    hexagon.transform.SetParent(transform, true);
                     hexagon.Initialize(AssetController.Instance.Colors.GetRandomElement());
                     _tileMap[pair.Key, Height - pair.Value.Item2 + j] = hexagon;
                     hexagon.transform.DOMove(new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * (Height - pair.Value.Item2 + j) + (pair.Key % 2 == 1 ? HexagonBehaviour.TileYOffset / 2 : 0), 0), 0.6f);
@@ -453,7 +453,7 @@ namespace Game.Scripts.Helpers
 
             UpdateIndexes();
 
-            CoroutineController.DoAfterGivenTime(0.6f, () => CheckMatching());
+            CoroutineController.DoAfterGivenTime(0.7f, () => CheckMatching());
         }
     }
 }
