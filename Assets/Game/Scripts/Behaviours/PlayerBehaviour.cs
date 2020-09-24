@@ -1,4 +1,5 @@
 ﻿using Game.Scripts.Controllers;
+using Game.Scripts.Helpers;
 using Game.Scripts.Models;
 using Mek.Controllers;
 using System;
@@ -64,7 +65,7 @@ namespace Game.Scripts.Behaviours
                     SelectGroup((hexagon, neighbours.Item1, neighbours.Item2));
                     _canRotate = true;
 
-                    Debug.Log($"NeighboursCanMatch: {hexagon.CheckIfNeighboursCanMatch()}");
+                    //Debug.Log($"NeighboursCanMatch: {hexagon.CheckIfNeighboursCanMatch()}");
                 }
             }
         }
@@ -133,10 +134,6 @@ namespace Game.Scripts.Behaviours
 
         private void OnRotated(Direction direction)
         {
-            _canRotate = false;
-            InputActions.Player.Tap.performed -= OnTapPerformed;
-            InputActions.Player.Tap.canceled -= OnTapCanceled;
-
             switch (direction)
             {
                 case Direction.Up:
@@ -153,17 +150,27 @@ namespace Game.Scripts.Behaviours
                     break;
             }
 
+            StartCoroutine(WaitTileMapReadyRoutine());
+
             void OnRotateCompleted(bool state)
             {
                 if (state) Deselect();
+                //ToggleInput(true);
             }
 
-            CoroutineController.DoAfterGivenTime(0.6f, () => 
+            IEnumerator WaitTileMapReadyRoutine()
             {
-                _canRotate = true;
+                InputActions.Player.Tap.performed -= OnTapPerformed;
+                InputActions.Player.Tap.canceled -= OnTapCanceled;
+
+                while (!TileMapSystem.TileMapReady)
+                {
+                    yield return null;
+                }
+
                 InputActions.Player.Tap.performed += OnTapPerformed;
                 InputActions.Player.Tap.canceled += OnTapCanceled;
-            });
+            }
         }
     }
 }

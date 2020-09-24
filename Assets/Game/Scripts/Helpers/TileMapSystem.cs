@@ -11,6 +11,8 @@ namespace Game.Scripts.Helpers
 {
     public class TileMapSystem : MonoBehaviour
     {
+        public static bool TileMapReady;
+
         private string _hexagonPath = "Hexagon";
 
         private HexagonBehaviour[,] _tileMap;
@@ -180,6 +182,8 @@ namespace Game.Scripts.Helpers
 
         public void RotateAntiClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, Action<bool> onComplete, float stepDuration = 0.2f)
         {
+            TileMapReady = false;
+
             StartCoroutine(Rotate());
 
             IEnumerator Rotate()
@@ -243,12 +247,16 @@ namespace Game.Scripts.Helpers
                     }
                 }
 
+                TileMapReady = true;
                 onComplete?.Invoke(false);
             }
         }
         public void RotateClockwise((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group, Action<bool> onComplete, float stepDuration = 0.2f)
         {
+            TileMapReady = false;
+
             StartCoroutine(Rotate());
+
             IEnumerator Rotate()
             {
                 var index = 0;
@@ -309,7 +317,7 @@ namespace Game.Scripts.Helpers
                         yield break;
                     }
                 }
-
+                TileMapReady = true;
                 onComplete?.Invoke(false);
             }
         }
@@ -450,9 +458,14 @@ namespace Game.Scripts.Helpers
                 }
             }
 
-            UpdateIndexes();
-
-            CoroutineController.DoAfterGivenTime(0.7f, () => CheckMatching());
+            CoroutineController.DoAfterGivenTime(0.7f, () =>
+            {
+                UpdateIndexes();
+                if (!CheckMatching())
+                {
+                    TileMapReady = true;
+                }
+            });
         }
     }
 }
