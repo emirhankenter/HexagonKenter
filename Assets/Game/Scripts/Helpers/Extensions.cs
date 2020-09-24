@@ -16,9 +16,9 @@ namespace Game.Scripts.Helpers
             int w = array.GetLength(0);
             int h = array.GetLength(1);
 
-            for (int x = 0; x < w; ++x)
+            for (int x = 0; x < w; x++)
             {
-                for (int y = 0; y < h; ++y)
+                for (int y = 0; y < h; y++)
                 {
                     if (array[x, y].Equals(item))
                         return (x,y);

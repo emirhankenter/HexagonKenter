@@ -374,11 +374,16 @@ namespace Game.Scripts.Helpers
 
             if (matchingHexagons.Count > 0)
             {
+                foreach (var index in indexes)
+                {
+                    _tileMap[index.Item1, index.Item2] = null;
+                }
+
                 foreach (var item in matchingHexagons)
                 {
                     Destroy(item.gameObject);
                 }
-                //SpawnHexagonsFromTop(indexes);
+
                 SlideHexagonsDown(indexes);
 
                 UpdateIndexes();
@@ -387,20 +392,6 @@ namespace Game.Scripts.Helpers
             }
 
             return false;
-        }
-
-        private void SpawnHexagonsFromTop(List<(int, int)> indexes)
-        {
-            var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
-
-            foreach (var index in indexes)
-            {
-                var hexagon = Instantiate(item as HexagonBehaviour, new Vector3(HexagonBehaviour.TileXOffset * index.Item1, HexagonBehaviour.TileYOffset * Height + 1, 0), Quaternion.identity);
-                hexagon.Initialize(AssetController.Instance.Colors.GetRandomElement());
-                _tileMap[index.Item1, index.Item2] = hexagon;
-                hexagon.transform.DOMove(new Vector3(HexagonBehaviour.TileXOffset * index.Item1, HexagonBehaviour.TileYOffset * index.Item2 + (index.Item1 % 2 == 1 ? HexagonBehaviour.TileYOffset / 2 : 0) , 0), 0.6f);
-            }
-            CoroutineController.DoAfterGivenTime(0.6f, () => CheckMatching());
         }
 
         private void SlideHexagonsDown(List<(int, int)> indexes)
@@ -424,18 +415,26 @@ namespace Game.Scripts.Helpers
 
             foreach (var pair in dictionary)
             {
-                for (int j = pair.Value.Item1 + 1; j < Height; j++)
+                var list = new List<HexagonBehaviour>();
+
+                for (int j = 0; j < Height; j++)
                 {
-                    var indexJ = j - pair.Value.Item2;
-                    _tileMap[pair.Key, indexJ] = _tileMap[pair.Key, j];
-                    _tileMap[pair.Key, indexJ].transform.DOMove(new Vector3(_tileMap[pair.Key, indexJ].transform.position.x, _tileMap[pair.Key, indexJ].transform.position.y - HexagonBehaviour.TileYOffset * pair.Value.Item2), 0.2f);
+                    if (_tileMap[pair.Key, j] != null)
+                    {
+                        list.Add(_tileMap[pair.Key, j]);
+                    }
+                }
+                for (int j = 0; j < list.Count; j++)
+                {
+                    _tileMap[pair.Key, j] = list[j];
+                    _tileMap[pair.Key, j].transform.DOMove(new Vector3(_tileMap[pair.Key, j].transform.position.x, j * HexagonBehaviour.TileYOffset + (pair.Key % 2 == 1 ? HexagonBehaviour.TileYOffset / 2 : 0)), 0.2f);
                 }
             }
 
-            SpawnHexagonsFromTopTest(dictionary);
+            SpawnHexagonsFromTop(dictionary);
         }
 
-        private void SpawnHexagonsFromTopTest(Dictionary<int, (int, int)> dictionary)
+        private void SpawnHexagonsFromTop(Dictionary<int, (int, int)> dictionary)
         {
             var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
 
