@@ -18,7 +18,7 @@ namespace Game.Scripts.View
         {
             base.Open();
 
-            _scoreElement.Initiliaze();
+            InitializeElements();
 
             RegisterEvents();
         }
@@ -26,6 +26,8 @@ namespace Game.Scripts.View
         public override void Close()
         {
             base.Close();
+
+            DisposeElements();
 
             UnregisterEvents();
         }
@@ -39,14 +41,21 @@ namespace Game.Scripts.View
         {
             TileMapSystem.HexagonBlowed -= OnHexagonBlowed;
         }
+        private void InitializeElements()
+        {
+            _scoreElement.Initiliaze();
+        }
+
+        private void DisposeElements()
+        {
+            _scoreElement.Dispose();
+        }
 
         private void OnHexagonBlowed(Vector2 screenPosition)
         {
             var floatingText = Instantiate(_floatingTextPrefab, transform);
             floatingText.rectTransform.position = screenPosition;
             floatingText.FadeAway(GameController.Instance.ScoreAmount);
-
-            _scoreElement.SetScore(GameController.CurrentScore);
         }
     }
 

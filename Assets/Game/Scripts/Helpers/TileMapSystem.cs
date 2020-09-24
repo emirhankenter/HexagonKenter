@@ -35,7 +35,7 @@ namespace Game.Scripts.Helpers
 
             if (item == null) return null;
 
-            GameController.BombSpawnScoreThresholdReached += OnBombSpawnInvoked;
+            GameController.Instance.BombSpawnScoreThresholdReached += OnBombSpawnInvoked;
 
             Width = width;
             Height = height;
@@ -83,7 +83,7 @@ namespace Game.Scripts.Helpers
 
         private void OnDestroy()
         {
-            GameController.BombSpawnScoreThresholdReached -= OnBombSpawnInvoked;
+            GameController.Instance.BombSpawnScoreThresholdReached -= OnBombSpawnInvoked;
         }
 
         private void UpdateIndexes()

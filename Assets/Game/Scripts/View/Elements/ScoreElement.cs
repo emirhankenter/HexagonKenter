@@ -14,6 +14,17 @@ namespace Game.Scripts.View.Elements
         public void Initiliaze()
         {
             SetScore(0);
+            PlayerData.ScoreChanged += OnScoreChanged;
+        }
+
+        public void Dispose()
+        {
+            PlayerData.ScoreChanged -= OnScoreChanged;
+        }
+
+        private void OnScoreChanged(int score)
+        {
+            SetScore(score);
         }
 
         public void SetScore(int score)

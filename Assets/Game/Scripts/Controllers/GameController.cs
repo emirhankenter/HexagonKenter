@@ -11,7 +11,7 @@ namespace Game.Scripts.Controllers
 {
     public class GameController : MonoBehaviour
     {
-        public static event Action BombSpawnScoreThresholdReached;
+        public Action BombSpawnScoreThresholdReached;
 
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeX;
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeY;
@@ -31,20 +31,6 @@ namespace Game.Scripts.Controllers
                     _cameraController = GetComponent<CameraController>();
                 }
                 return _cameraController;
-            }
-        }
-
-        private static int _currentScore;
-        public static int CurrentScore
-        {
-            get { return _currentScore; }
-            set
-            {
-                _currentScore = value;
-                if (_currentScore % BombSpawnThreshold <= 30)
-                {
-                    BombSpawnScoreThresholdReached?.Invoke();
-                }
             }
         }
 
@@ -70,7 +56,7 @@ namespace Game.Scripts.Controllers
 
         private void OnHexagonBlowed(Vector2 screenPosition)
         {
-            CurrentScore += ScoreAmount;
+            PlayerData.CurrentScore += ScoreAmount;
         }
 
         #region Singleton
