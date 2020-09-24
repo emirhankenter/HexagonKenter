@@ -21,7 +21,7 @@ namespace Game.Scripts.Controllers
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeY;
 
         public int ScoreAmount = 5;
-        public static int BombSpawnThreshold = 15;
+        public static int BombSpawnThreshold = 1000;
 
         [ReadOnly] public HexagonLevelBehaviour CurrentLevel;
 
@@ -54,12 +54,14 @@ namespace Game.Scripts.Controllers
             ViewController.Instance.InGameView.Open(new InGameViewParameters());
 
             TileMapSystem.HexagonBlowed += OnHexagonBlowed;
+            TileMapSystem.OutOfMove += OnOutOfMove;
             BombHexagonBehaviour.Exploded += OnBombExploded;
         }
 
         private void DisposeLevel()
         {
             TileMapSystem.HexagonBlowed -= OnHexagonBlowed;
+            TileMapSystem.OutOfMove -= OnOutOfMove;
             BombHexagonBehaviour.Exploded -= OnBombExploded;
 
             Destroy(CurrentLevel.gameObject);
@@ -77,6 +79,11 @@ namespace Game.Scripts.Controllers
         }
 
         private void OnBombExploded()
+        {
+            OnGameOver();
+        }
+
+        private void OnOutOfMove()
         {
             OnGameOver();
         }

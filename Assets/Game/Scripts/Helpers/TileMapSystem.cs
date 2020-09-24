@@ -14,6 +14,7 @@ namespace Game.Scripts.Helpers
     public class TileMapSystem : MonoBehaviour
     {
         public static HexagonBlowDelegate HexagonBlowed;
+        public static event Action OutOfMove;
 
         public static bool TileMapReady;
 
@@ -87,7 +88,7 @@ namespace Game.Scripts.Helpers
             GameController.Instance.BombSpawnScoreThresholdReached -= OnBombSpawnInvoked;
         }
 
-        private void UpdateIndexes()
+        private void SetTileMap()
         {
             for (int i = 0; i < Width; i++)
             {
@@ -114,7 +115,7 @@ namespace Game.Scripts.Helpers
                                 _tileMap[i, j].Hexagon.LeftDown = _tileMap[i - 1, j - 1];
                             }
 
-                             _tileMap[i, j].Hexagon.LeftUp = _tileMap[i - 1, j];
+                            _tileMap[i, j].Hexagon.LeftUp = _tileMap[i - 1, j];
 
                         }
                     }
@@ -153,6 +154,24 @@ namespace Game.Scripts.Helpers
                     }
                 }
             }
+        }
+
+        private void UpdateIndexes()
+        {
+            SetTileMap();
+
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    if (_tileMap[i, j].CheckIfNeighboursCanMatch())
+                    {
+                        return;
+                    }
+                }
+            }
+
+            OutOfMove?.Invoke();
         }
 
         public bool IsInside(Vector2 origin, Vector2 position)

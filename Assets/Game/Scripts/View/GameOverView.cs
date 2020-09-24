@@ -45,7 +45,7 @@ namespace Game.Scripts.View
         private void InitializeElements()
         {
             _restartButton.interactable = true;
-            _scoreText.text = $"Score: {_params.ToString()}";
+            _scoreText.text = $"Score: {_params.Score.ToString()}";
         }
 
         private void DisposeElements()
