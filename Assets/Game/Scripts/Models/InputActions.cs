@@ -34,7 +34,7 @@ namespace Game.Scripts.Models
                     ""id"": ""385188da-23bf-41c6-8a61-d9091537ac8c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Hold(duration=0.2)""
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""Move"",
@@ -82,7 +82,7 @@ namespace Game.Scripts.Models
                 {
                     ""name"": """",
                     ""id"": ""6f046263-042c-44fb-a8ad-147a50f9ee12"",
-                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -94,7 +94,7 @@ namespace Game.Scripts.Models
                     ""name"": """",
                     ""id"": ""41717ee5-4ae0-4204-a186-98a7e6a7bdcf"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Fire"",
