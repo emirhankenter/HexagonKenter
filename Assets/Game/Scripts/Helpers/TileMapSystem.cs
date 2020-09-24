@@ -283,15 +283,15 @@ namespace Game.Scripts.Helpers
                         {
                             if (item1Indeces.i == i && item1Indeces.j == j)
                             {
-                                tempArray[i, j] = _tileMap[item3Indeces.i, item3Indeces.j];
+                                tempArray[i, j] = _tileMap[item2Indeces.i, item2Indeces.j];
                             }
                             else if (item2Indeces.i == i && item2Indeces.j == j)
                             {
-                                tempArray[i, j] = _tileMap[item1Indeces.i, item1Indeces.j];
+                                tempArray[i, j] = _tileMap[item3Indeces.i, item3Indeces.j];
                             }
                             else if (item3Indeces.i == i && item3Indeces.j == j)
                             {
-                                tempArray[i, j] = _tileMap[item2Indeces.i, item2Indeces.j];
+                                tempArray[i, j] = _tileMap[item1Indeces.i, item1Indeces.j];
                             }
                         }
                     }
