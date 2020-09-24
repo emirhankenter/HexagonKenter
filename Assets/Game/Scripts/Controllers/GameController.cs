@@ -1,5 +1,6 @@
 ﻿using Game.Scripts.Behaviours;
 using Game.Scripts.Helpers;
+using Game.Scripts.View;
 using NaughtyAttributes;
 using System;
 using System.Collections;
@@ -10,8 +11,13 @@ namespace Game.Scripts.Controllers
 {
     public class GameController : MonoBehaviour
     {
+        public static event Action BombSpawnScoreThresholdReached;
+
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeX;
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeY;
+
+        public int ScoreAmount = 5;
+        public static int BombSpawnThreshold = 30;
 
         [ReadOnly] public HexagonLevelBehaviour CurrentLevel;
 
@@ -28,6 +34,20 @@ namespace Game.Scripts.Controllers
             }
         }
 
+        private static int _currentScore;
+        public static int CurrentScore
+        {
+            get { return _currentScore; }
+            set
+            {
+                _currentScore = value;
+                if (_currentScore % BombSpawnThreshold <= 30)
+                {
+                    BombSpawnScoreThresholdReached?.Invoke();
+                }
+            }
+        }
+
         private void Awake()
         {
             PrepareLevel();
@@ -38,10 +58,19 @@ namespace Game.Scripts.Controllers
             CurrentLevel = new GameObject("TileMap").AddComponent<HexagonLevelBehaviour>();
 
             CurrentLevel.Initiliaze(_gridSizeX, _gridSizeY);
+
+            ViewController.Instance.InGameView.Open(new InGameViewParameters());
+
+            TileMapSystem.HexagonBlowed += OnHexagonBlowed;
         }
 
         private void DisposeLevel()
         {
+        }
+
+        private void OnHexagonBlowed(Vector2 screenPosition)
+        {
+            CurrentScore += ScoreAmount;
         }
 
         #region Singleton

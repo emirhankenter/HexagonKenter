@@ -5,12 +5,16 @@ using Mek.Controllers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 namespace Game.Scripts.Helpers
 {
+    public delegate void HexagonBlowDelegate(Vector2 screenPosition);
     public class TileMapSystem : MonoBehaviour
     {
+        public static HexagonBlowDelegate HexagonBlowed;
+
         public static bool TileMapReady;
 
         private string _hexagonPath = "Hexagon";
@@ -23,11 +27,15 @@ namespace Game.Scripts.Helpers
         protected float HorizontalLenght;
         protected float VerticalLenght;
 
+        private bool _bombIsInQueue;
+
         public HexagonBehaviour[,] CreateHexagonTileMap(int width, int height, Transform parent)
         {
             var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
 
             if (item == null) return null;
+
+            GameController.BombSpawnScoreThresholdReached += OnBombSpawnInvoked;
 
             Width = width;
             Height = height;
@@ -71,6 +79,11 @@ namespace Game.Scripts.Helpers
             }
 
             return _tileMap;
+        }
+
+        private void OnDestroy()
+        {
+            GameController.BombSpawnScoreThresholdReached -= OnBombSpawnInvoked;
         }
 
         private void UpdateIndexes()
@@ -389,6 +402,7 @@ namespace Game.Scripts.Helpers
 
                 foreach (var item in matchingHexagons)
                 {
+                    HexagonBlowed?.Invoke(GameController.Instance.CameraController.Camera.WorldToScreenPoint(item.transform.position));
                     Destroy(item.gameObject);
                 }
 
@@ -452,9 +466,15 @@ namespace Game.Scripts.Helpers
                 {
                     var hexagon = Instantiate(item as HexagonBehaviour, new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * Height + 1, 0), Quaternion.identity);
                     hexagon.transform.SetParent(transform, true);
-                    hexagon.Initialize(AssetController.Instance.Colors.GetRandomElement());
+                    hexagon.Initialize(_bombIsInQueue ? UnityEngine.Color.red : AssetController.Instance.Colors.GetRandomElement());
                     _tileMap[pair.Key, Height - pair.Value.Item2 + j] = hexagon;
                     hexagon.transform.DOMove(new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * (Height - pair.Value.Item2 + j) + (pair.Key % 2 == 1 ? HexagonBehaviour.TileYOffset / 2 : 0), 0), 0.6f);
+
+                    if (_bombIsInQueue)
+                    {
+                        Debug.Log("BombSpawned");
+                        _bombIsInQueue = false;
+                    }
                 }
             }
 
@@ -466,6 +486,11 @@ namespace Game.Scripts.Helpers
                     TileMapReady = true;
                 }
             });
+        }
+
+        private void OnBombSpawnInvoked()
+        {
+            _bombIsInQueue = true;
         }
     }
 }
