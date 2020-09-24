@@ -18,6 +18,7 @@ namespace Game.Scripts.Helpers
         public static bool TileMapReady;
 
         private string _hexagonPath = "Hexagon";
+        private string _hexagonBombPath = "BombHexagon";
 
         private HexagonBehaviour[,] _tileMap;
 
@@ -459,20 +460,20 @@ namespace Game.Scripts.Helpers
         private void SpawnHexagonsFromTop(Dictionary<int, (int, int)> dictionary)
         {
             var item = Resources.Load<HexagonBehaviour>(_hexagonPath);
+            var bomb = Resources.Load<HexagonBehaviour>(_hexagonBombPath);
 
             foreach (var pair in dictionary)
             {
                 for (int j = 0; j < pair.Value.Item2; j++)
                 {
-                    var hexagon = Instantiate(item as HexagonBehaviour, new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * Height + 1, 0), Quaternion.identity);
+                    var hexagon = Instantiate(_bombIsInQueue ? bomb as HexagonBehaviour : item as HexagonBehaviour, new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * Height + 1, 0), Quaternion.identity);
                     hexagon.transform.SetParent(transform, true);
-                    hexagon.Initialize(_bombIsInQueue ? UnityEngine.Color.red : AssetController.Instance.Colors.GetRandomElement());
+                    hexagon.Initialize(AssetController.Instance.Colors.GetRandomElement());
                     _tileMap[pair.Key, Height - pair.Value.Item2 + j] = hexagon;
                     hexagon.transform.DOMove(new Vector3(HexagonBehaviour.TileXOffset * pair.Key, HexagonBehaviour.TileYOffset * (Height - pair.Value.Item2 + j) + (pair.Key % 2 == 1 ? HexagonBehaviour.TileYOffset / 2 : 0), 0), 0.6f);
 
                     if (_bombIsInQueue)
                     {
-                        Debug.Log("BombSpawned");
                         _bombIsInQueue = false;
                     }
                 }

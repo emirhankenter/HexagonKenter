@@ -19,6 +19,7 @@ namespace Game.Scripts.Behaviours
     }
     public class PlayerBehaviour : MonoBehaviour
     {
+        public static event Action PlayerMoveOccured;
         public static event Action<Direction> Rotated;
 
         [SerializeField] private LayerMask _targetLayer;
@@ -33,6 +34,23 @@ namespace Game.Scripts.Behaviours
         {
             InputActions = new InputActions();
             InputActions.Enable();
+
+            GameController.GameStarted += OnGameStarted;
+            GameController.GameOver += OnGameOver;
+        }
+
+        private void OnDestroy()
+        {
+            InputActions.Disable();
+
+            GameController.GameStarted -= OnGameStarted;
+            GameController.GameOver -= OnGameOver;
+        }
+
+        public void OnGameStarted()
+        {
+            InputActions.Enable();
+
             InputActions.Player.Tap.performed += OnTapPerformed;
             InputActions.Player.Tap.canceled += OnTapCanceled;
 
@@ -41,15 +59,23 @@ namespace Game.Scripts.Behaviours
             Rotated += OnRotated;
         }
 
-        private void OnDestroy()
+        private void OnGameOver()
         {
             InputActions.Disable();
+
             InputActions.Player.Tap.performed -= OnTapPerformed;
             InputActions.Player.Tap.canceled -= OnTapCanceled;
 
             InputActions.Player.Fire.performed -= OnFirePerformed;
 
             Rotated -= OnRotated;
+
+            Deselect();
+
+            if (CoroutineController.IsCoroutineRunning("WaitTileMapReadyRoutineKey"))
+            {
+                CoroutineController.StopThisCoroutine("WaitTileMapReadyRoutineKey");
+            }
         }
 
         private void OnTapPerformed(InputAction.CallbackContext obj)
@@ -64,8 +90,6 @@ namespace Game.Scripts.Behaviours
                 {
                     SelectGroup((hexagon, neighbours.Item1, neighbours.Item2));
                     _canRotate = true;
-
-                    //Debug.Log($"NeighboursCanMatch: {hexagon.CheckIfNeighboursCanMatch()}");
                 }
             }
         }
@@ -105,8 +129,6 @@ namespace Game.Scripts.Behaviours
                 InputActions.Player.Move.performed -= OnMovePerformed;
                 return;
             }
-
-            //Debug.Log($"({position.x}, {position.y})");
         }
 
         private void SelectGroup((HexagonBehaviour, HexagonBehaviour, HexagonBehaviour) group)
@@ -150,27 +172,31 @@ namespace Game.Scripts.Behaviours
                     break;
             }
 
-            StartCoroutine(WaitTileMapReadyRoutine());
+            CoroutineController.StartCoroutine("WaitTileMapReadyRoutineKey", WaitTileMapReadyRoutine());
 
             void OnRotateCompleted(bool state)
             {
-                if (state) Deselect();
-                //ToggleInput(true);
-            }
-
-            IEnumerator WaitTileMapReadyRoutine()
-            {
-                InputActions.Player.Tap.performed -= OnTapPerformed;
-                InputActions.Player.Tap.canceled -= OnTapCanceled;
-
-                while (!TileMapSystem.TileMapReady)
+                if (state)
                 {
-                    yield return null;
+                    Deselect();
                 }
-
-                InputActions.Player.Tap.performed += OnTapPerformed;
-                InputActions.Player.Tap.canceled += OnTapCanceled;
             }
+
+            PlayerMoveOccured?.Invoke();
+        }
+
+        private IEnumerator WaitTileMapReadyRoutine()
+        {
+            InputActions.Player.Tap.performed -= OnTapPerformed;
+            InputActions.Player.Tap.canceled -= OnTapCanceled;
+
+            while (!TileMapSystem.TileMapReady)
+            {
+                yield return null;
+            }
+
+            InputActions.Player.Tap.performed += OnTapPerformed;
+            InputActions.Player.Tap.canceled += OnTapCanceled;
         }
     }
 }

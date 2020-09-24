@@ -26,6 +26,15 @@ namespace Mek.Controllers
             return _coroutineDictionary.ContainsKey(key);
         }
 
+        public static void StopThisCoroutine(string key)
+        {
+            if (_coroutineDictionary.TryGetValue(key, out IEnumerator value))
+            {
+                Instance.StopCoroutine(value);
+                _coroutineDictionary.Remove(key);
+            }
+        }
+
         private Coroutine StartMyCoroutine(string key, IEnumerator coroutine)
         {
             return StartCoroutine(GenericCoroutine(key, coroutine));

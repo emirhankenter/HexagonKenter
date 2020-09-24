@@ -1,6 +1,8 @@
-﻿using Game.Scripts.Behaviours;
+﻿using Assets.Game.Scripts.Behaviours;
+using Game.Scripts.Behaviours;
 using Game.Scripts.Helpers;
 using Game.Scripts.View;
+using Mek.Controllers;
 using NaughtyAttributes;
 using System;
 using System.Collections;
@@ -11,13 +13,15 @@ namespace Game.Scripts.Controllers
 {
     public class GameController : MonoBehaviour
     {
+        public static event Action GameStarted;
+        public static event Action GameOver;
         public Action BombSpawnScoreThresholdReached;
 
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeX;
         [SerializeField, BoxGroup("GridSize")] private int _gridSizeY;
 
         public int ScoreAmount = 5;
-        public static int BombSpawnThreshold = 30;
+        public static int BombSpawnThreshold = 15;
 
         [ReadOnly] public HexagonLevelBehaviour CurrentLevel;
 
@@ -45,18 +49,48 @@ namespace Game.Scripts.Controllers
 
             CurrentLevel.Initiliaze(_gridSizeX, _gridSizeY);
 
+            GameStarted?.Invoke();
+
             ViewController.Instance.InGameView.Open(new InGameViewParameters());
 
             TileMapSystem.HexagonBlowed += OnHexagonBlowed;
+            BombHexagonBehaviour.Exploded += OnBombExploded;
         }
 
         private void DisposeLevel()
         {
+            TileMapSystem.HexagonBlowed -= OnHexagonBlowed;
+            BombHexagonBehaviour.Exploded -= OnBombExploded;
+
+            Destroy(CurrentLevel.gameObject);
+
+            CoroutineController.DoAfterGivenTime(1f, () =>
+            {
+                ViewController.Instance.GameOverView.Close();
+                PrepareLevel();
+            });
         }
 
         private void OnHexagonBlowed(Vector2 screenPosition)
         {
             PlayerData.CurrentScore += ScoreAmount;
+        }
+
+        private void OnBombExploded()
+        {
+            OnGameOver();
+        }
+
+        private void OnGameOver()
+        {
+            ViewController.Instance.InGameView.Close();
+            ViewController.Instance.GameOverView.Open(new GameOverViewParameters(OnRestart));
+            GameOver?.Invoke();
+        }
+
+        private void OnRestart()
+        {
+            DisposeLevel();
         }
 
         #region Singleton

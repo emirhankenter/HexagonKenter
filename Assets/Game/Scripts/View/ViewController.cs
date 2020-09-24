@@ -9,6 +9,9 @@ namespace Game.Scripts.View
         [SerializeField] private View _inGameView;
         public View InGameView => _inGameView;
 
+        [SerializeField] private View _gameOverView;
+        public View GameOverView => _gameOverView;
+
         #region Singleton
 
         private static ViewController _instance;
