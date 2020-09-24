@@ -84,7 +84,7 @@ namespace Game.Scripts.Controllers
         private void OnGameOver()
         {
             ViewController.Instance.InGameView.Close();
-            ViewController.Instance.GameOverView.Open(new GameOverViewParameters(OnRestart));
+            ViewController.Instance.GameOverView.Open(new GameOverViewParameters(PlayerData.CurrentScore, OnRestart));
             GameOver?.Invoke();
         }
 

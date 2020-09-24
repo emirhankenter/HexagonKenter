@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ namespace Game.Scripts.View
 {
     public class GameOverView : View
     {
+        [SerializeField] private TextMeshProUGUI _scoreText;
         [SerializeField] private Button _restartButton;
 
         private GameOverViewParameters _params;
@@ -43,6 +45,7 @@ namespace Game.Scripts.View
         private void InitializeElements()
         {
             _restartButton.interactable = true;
+            _scoreText.text = $"Score: {_params.ToString()}";
         }
 
         private void DisposeElements()
@@ -58,10 +61,12 @@ namespace Game.Scripts.View
 
     public class GameOverViewParameters : ViewParameters 
     {
+        public int Score;
         public Action OnComplete;
 
-        public GameOverViewParameters(Action onComplete)
+        public GameOverViewParameters(int score, Action onComplete)
         {
+            Score = score;
             OnComplete = onComplete;
         }
     }
