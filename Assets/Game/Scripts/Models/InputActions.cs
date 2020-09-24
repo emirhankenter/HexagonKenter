@@ -59,6 +59,17 @@ namespace Game.Scripts.Models
                 },
                 {
                     ""name"": """",
+                    ""id"": ""cfc50653-de8e-4ea2-8098-a35d6f5bd06c"",
+                    ""path"": ""<Touchscreen>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""2d2f31cd-9b45-46ab-9bc8-56de4d6a4718"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -70,8 +81,30 @@ namespace Game.Scripts.Models
                 },
                 {
                     ""name"": """",
+                    ""id"": ""6f046263-042c-44fb-a8ad-147a50f9ee12"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""41717ee5-4ae0-4204-a186-98a7e6a7bdcf"",
                     ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d51d8a39-67d9-4791-8b65-68ca4f05fa02"",
+                    ""path"": ""<Touchscreen>/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
