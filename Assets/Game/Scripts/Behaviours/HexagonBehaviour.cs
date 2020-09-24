@@ -257,8 +257,6 @@ namespace Game.Scripts.Behaviours
             if (1 / radians < 0) radians += 2 * Math.PI;
             var degrees = radians * 180f / Math.PI;
 
-            //Debug.Log($"Degrees: {degrees}");
-
             if (degrees > 330f || degrees <= 30f)
             {
                 if (GetRighUpAndRightDownNeighbours(out neighbours)) return true;
@@ -283,38 +281,6 @@ namespace Game.Scripts.Behaviours
             {
                 if (GetDownAndRightDownNeighbours(out neighbours)) return true;
             }
-
-            if (degrees > 0 && degrees <= 180)
-            {
-                var closeToLeft = Math.Abs(180f - degrees) < Math.Abs(degrees - 0);
-
-                if (closeToLeft)
-                {
-                    //if (GetUpAndRightUpNeighbours(out neighbours)) return true;
-                    //else if (GetDownAndRightDownNeighbours(out neighbours)) return true;
-                }
-                else
-                {
-                    //if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
-                    //else if (GetDownAndLeftDownNeighbours(out neighbours)) return true;
-                }
-            }
-            else
-            {
-                var closeToLeft = Math.Abs(360f - degrees) > Math.Abs(degrees - 180f);
-
-                if (closeToLeft)
-                {
-                    //if (GetLeftUpAndLeftDownNeighbours(out neighbours)) return true;
-                    //else if (GetUpAndLeftUpNeighbours(out neighbours)) return true;
-                }
-                else
-                {
-                    //if (GetRighUpAndRightDownNeighbours(out neighbours)) return true;
-                    //else if (GetUpAndRightUpNeighbours(out neighbours)) return true;
-                }
-            }
-
             neighbours = (null, null);
             return false;
         }
