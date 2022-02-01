@@ -32,6 +32,7 @@ public class JenkinsBuild {
         var args = FindArgs();
  
         string fullPathAndName = args.targetDir + args.appName + ".exe";
+        PlayerSettings.bundleVersion = args.buildNo.ToString();
         BuildProject(EnabledScenes, fullPathAndName, BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64, BuildOptions.None);
     }
  
@@ -43,6 +44,8 @@ public class JenkinsBuild {
         var args = FindArgs();
  
         string fullPathAndName = args.targetDir + args.appName;
+        PlayerSettings.bundleVersion = args.buildNo.ToString();
+        
         BuildProject(EnabledScenes, fullPathAndName, BuildTargetGroup.Standalone, BuildTarget.StandaloneLinux64, BuildOptions.None);
     }
  
@@ -54,6 +57,7 @@ public class JenkinsBuild {
         var args = FindArgs();
  
         string fullPathAndName = args.targetDir + args.appName + ".apk";
+        PlayerSettings.bundleVersion = args.buildNo.ToString();
         BuildProject(EnabledScenes, fullPathAndName, BuildTargetGroup.Android, BuildTarget.Android, BuildOptions.CompressWithLz4HC);
     }
  
@@ -65,6 +69,7 @@ public class JenkinsBuild {
         var args = FindArgs();
 
         string fullPathAndName = args.targetDir + args.appName;
+        PlayerSettings.bundleVersion = args.buildNo.ToString();
         BuildProject(EnabledScenes, fullPathAndName, BuildTargetGroup.iOS, BuildTarget.iOS, BuildOptions.CompressWithLz4HC);
     }
     
@@ -94,6 +99,7 @@ public class JenkinsBuild {
             if (realPos == 1)
             {
                 returnValue.targetDir = args[i];
+                returnValue.buildNo = int.Parse(args[i]);
                 if (!returnValue.targetDir.EndsWith(System.IO.Path.DirectorySeparatorChar + ""))
                     returnValue.targetDir += System.IO.Path.DirectorySeparatorChar;
  
@@ -155,6 +161,7 @@ public class JenkinsBuild {
     private class Args
     {
         public string appName = "AppName";
+        public int buildNo = 0;
         public string targetDir = "~/Desktop";
     }
 }
