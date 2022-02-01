@@ -58,3 +58,7 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Custom
+PackageManagerSettings.asset
+VersionControlSettings.asset
+EditorUserSettings.asset
